@@ -172,25 +172,17 @@
     100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
   }
   .login-card {
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --border: rgba(0,0,0,0.1);
     position: relative; z-index: 10; 
-    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1), rgba(255, 255, 255, 0.05), rgba(19, 136, 8, 0.1));
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--border);
     border-radius: 24px;
     padding: 48px 44px; width: 440px; max-width: calc(100vw - 32px);
     backdrop-filter: blur(24px);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 32px 64px rgba(0,0,0,0.5), 0 0 80px rgba(255, 153, 51, 0.1);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 32px 64px rgba(0,0,0,0.2), 0 0 80px rgba(255, 255, 255, 0.2);
     animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  .login-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 153, 51, 0.8), rgba(255, 255, 255, 0.4), rgba(19, 136, 8, 0.8));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
   }
   @keyframes cardIn {
     from { opacity: 0; transform: translateY(30px) scale(0.96); }
@@ -242,26 +234,26 @@
     position: relative;
   }
   .btn-google {
-    background: #ffffff; border: 1px solid #e5e7eb;
-    color: #374151;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 8px;
+    background: #FF9933; border: 1px solid #e68a2e;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255,153,51,0.2); margin-top: 8px;
   }
-  .btn-google:hover:not(:disabled) { background: #f9fafb; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+  .btn-google:hover:not(:disabled) { background: #ffaa4d; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,153,51,0.3); }
   .btn-google:active { transform: translateY(0); }
   .btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-google.loading span { opacity: 0; }
   .btn-google.loading::after {
     content: ''; position: absolute;
     width: 20px; height: 20px;
-    border: 2px solid rgba(0,0,0,0.1); border-top-color: #374151;
+    border: 2px solid rgba(255,255,255,0.2); border-top-color: #ffffff;
     border-radius: 50%; animation: spin 0.7s linear infinite;
   }
   .btn-microsoft {
-    background: #2f2f2f; border: 1px solid #444;
+    background: #138808; border: 1px solid #117a07;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25); margin-top: 12px;
+    box-shadow: 0 4px 12px rgba(19,136,8,0.2); margin-top: 12px;
   }
-  .btn-microsoft:hover:not(:disabled) { background: #404040; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
+  .btn-microsoft:hover:not(:disabled) { background: #18a30a; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(19,136,8,0.3); }
   .btn-microsoft:active { transform: translateY(0); }
   .btn-microsoft:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-microsoft.loading span { opacity: 0; }
@@ -285,8 +277,8 @@
     color: var(--text-secondary); background: rgba(99,102,241,0.07);
     border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; padding: 12px 16px;
   }
-  .access-note strong { color: #a5b4fc; }
-  .card-footer { margin-top: 28px; text-align: center; font-size: 12px; color: rgba(255,255,255,0.2); }
+  .access-note strong { color: var(--accent-hover); }
+  .card-footer { margin-top: 28px; text-align: center; font-size: 12px; color: var(--text-secondary); }
   .watermark {
     position: fixed;
     top: 50%;
