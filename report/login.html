@@ -220,9 +220,8 @@
     }
 
     .brand .kl-logo {
-      width: 96px;
-      /* ≈ 3cm at 96dpi, slightly reduced for fit */
-      height: 96px;
+      width: 240px;
+      height: auto;
       object-fit: contain;
       border-radius: 12px;
       flex-shrink: 0;
@@ -470,6 +469,7 @@
 </head>
 
 <body>
+<div style="background: red; color: white; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; z-index: 9999; position: relative;">SERVER IS WORKING - YOU ARE LOOKING AT THE RIGHT FILE</div>
 
   <!-- Full-screen watermark -->
   <div class="watermark">
@@ -554,7 +554,7 @@
       members &amp; mentor) can sign in.
     </div>
 
-    <div class="card-footer">© 2026 Capstone Project 220 — KL University</div>
+    <div class="card-footer">© 2026-27 Capstone Project 220 — KL University</div>
 
   </div>
 
@@ -611,6 +611,26 @@
 
     function handleGoogleLogin(e) { if (e) e.preventDefault(); triggerLogin('btn-google', window.firebaseGoogleLogin); }
     function handleMicrosoftLogin(e) { if (e) e.preventDefault(); triggerLogin('btn-microsoft', window.fireMicrosoftLogin); }
+
+    // DEV BYPASS INJECTION
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const formPanel = document.querySelector('.form-panel');
+        const bypassBtn = document.createElement('button');
+        bypassBtn.className = 'social-btn';
+        bypassBtn.style.backgroundColor = '#FEF3C7';
+        bypassBtn.style.borderColor = '#F59E0B';
+        bypassBtn.style.color = '#B45309';
+        bypassBtn.innerHTML = `⚠️ Developer Bypass (Localhost Only)`;
+        bypassBtn.onclick = function() {
+          sessionStorage.setItem("dev_bypass", "true");
+          window.location.href = "index.html";
+        };
+        // Insert right above the access note
+        const accessNote = document.querySelector('.access-note');
+        formPanel.insertBefore(bypassBtn, accessNote);
+      }
+    });
   </script>
   <style>
     @keyframes spin {
