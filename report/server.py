@@ -6,6 +6,11 @@ import os
 PORT = 8080
 
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/':
+            self.path = '/login.html'
+        return super().do_GET()
+
     def do_POST(self):
         if self.path == '/api/save':
             content_length = int(self.headers['Content-Length'])

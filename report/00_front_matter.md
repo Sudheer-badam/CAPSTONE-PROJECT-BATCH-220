@@ -1,5 +1,5 @@
 
-# AI-BASED SOCIAL MEDIA SENTIMENT AND TREND ANALYSIS PLATFORM
+# AI-BASED SOCIAL MEDIA SENTIMENT AND TREND ANALYSIS PLATFORM ON WOMEN SAFETY
 
 ---
 
@@ -51,7 +51,7 @@
 
 # CERTIFICATE
 
-This is to certify that the project report entitled **"AI-Based Social Media Sentiment and Trend Analysis Platform"** submitted by **KOKKILIGADDA TULASI VENKATA DURGA** (Roll No.: 2300032267), **BADAM SUDHEER REDDY** (Roll No.: 2300033278), **GARIKAPATI SATYA KARTHIKA** (Roll No.: 2300030988), **MITTA KAVYA NAYANA** (Roll No.: 2300033848), and **INTI HANITHA SAI GAYATHRI** (Roll No.: 2300032512), in partial fulfilment of the requirements for the award of the degree of **Bachelor of Technology in Computer Science and Engineering** from **KL University (Koneru Lakshmaiah Education Foundation)**, is a record of bonafide work carried out under my supervision and guidance during the academic year 2026–27.
+This is to certify that the project report entitled **"AI-Based Social Media Sentiment and Trend Analysis Platform On Women Safety"** submitted by **KOKKILIGADDA TULASI VENKATA DURGA** (Roll No.: 2300032267), **BADAM SUDHEER REDDY** (Roll No.: 2300033278), **GARIKAPATI SATYA KARTHIKA** (Roll No.: 2300030988), **MITTA KAVYA NAYANA** (Roll No.: 2300033848), and **INTI HANITHA SAI GAYATHRI** (Roll No.: 2300032512), in partial fulfilment of the requirements for the award of the degree of **Bachelor of Technology in Computer Science and Engineering** from **KL University (Koneru Lakshmaiah Education Foundation)**, is a record of bonafide work carried out under my supervision and guidance during the academic year 2026–27.
 
 The project work described in this report is original and has not been submitted elsewhere for the award of any other degree or diploma.
 
@@ -95,7 +95,7 @@ Signature: \_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_\_\_\_\_\_\_\_\_\_
 
 # DECLARATION
 
-We hereby declare that the project report entitled **"AI-Based Social Media Sentiment and Trend Analysis Platform"** submitted to **KL University (Koneru Lakshmaiah Education Foundation)** in partial fulfilment of the requirements for the award of the degree of **Bachelor of Technology in Computer Science and Engineering** is our original work. The project has been carried out under the guidance of **Mr. M. Subba Rao**, Department of Computer Science and Engineering, KL University.
+We hereby declare that the project report entitled **"AI-Based Social Media Sentiment and Trend Analysis Platform On Women Safety"** submitted to **KL University (Koneru Lakshmaiah Education Foundation)** in partial fulfilment of the requirements for the award of the degree of **Bachelor of Technology in Computer Science and Engineering** is our original work. The project has been carried out under the guidance of **Mr. M. Subba Rao**, Department of Computer Science and Engineering, KL University.
 
 We further declare that this project has not been submitted, either in part or in full, for the award of any other degree or diploma at this or any other institution or university.
 
@@ -150,7 +150,7 @@ Finally, we express deep gratitude to our families for their constant encouragem
 
 # ABSTRACT
 
-**Project Title:** AI-Based Social Media Sentiment and Trend Analysis Platform
+**Project Title:** AI-Based Social Media Sentiment and Trend Analysis Platform On Women Safety
 
 **Submitted by:**
 
@@ -170,7 +170,7 @@ Finally, we express deep gratitude to our families for their constant encouragem
 
 ---
 
-The rapid growth of social media platforms such as Twitter (X), Instagram, Facebook, Reddit, and YouTube has generated enormous volumes of user-generated content every day. This data contains valuable information about public opinions, customer experiences, emerging trends, and market behavior. However, manually analyzing such a massive amount of unstructured data is difficult, time-consuming, and inefficient. To address this challenge, this project presents an **AI-Based Social Media Sentiment and Trend Analysis Platform** that automatically collects, processes, analyzes, and visualizes social media data using Artificial Intelligence and Natural Language Processing (NLP) techniques.
+The rapid growth of social media platforms such as Twitter (X), Instagram, Facebook, Reddit, and YouTube has generated enormous volumes of user-generated content every day. This data contains valuable information about public opinions, customer experiences, emerging trends, and market behavior. However, manually analyzing such a massive amount of unstructured data is difficult, time-consuming, and inefficient. To address this challenge, this project presents an **AI-Based Social Media Sentiment and Trend Analysis Platform On Women Safety** that automatically collects, processes, analyzes, and visualizes social media data using Artificial Intelligence and Natural Language Processing (NLP) techniques.
 
 The platform gathers real-time posts from multiple social media sources through APIs and performs data preprocessing by removing noise, special characters, duplicate content, and irrelevant information. Advanced NLP techniques such as tokenization, stop-word removal, stemming, and lemmatization are applied to prepare the text for analysis. Machine Learning and Deep Learning models, including VADER, TextBlob, and transformer-based models like BERT, are used to classify sentiments into **Positive**, **Negative**, and **Neutral** categories with high accuracy. The system also identifies emotional expressions such as happiness, anger, sadness, and surprise to provide deeper insights into user opinions.
 

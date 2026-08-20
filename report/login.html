@@ -1,452 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CAPSTONE PROJECT-220 | KL University</title>
-<meta name="description" content="AI-Based Social Media Sentiment and Trend Analysis Platform by KL University Batch 220."/>
-<meta name="keywords" content="CAPSTONE PROJECT-220, KL University, AI, Sentiment Analysis, Trend Analysis, Batch 220, Capstone"/>
-<meta name="author" content="Batch 220"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>CAPSTONE PROJECT-220 | KL University</title>
+  <meta name="description"
+    content="AI-Based Social Media Sentiment and Trend Analysis Platform ON WOMEN SAFETY by KL University Batch 220." />
+  <meta name="keywords"
+    content="CAPSTONE PROJECT-220, KL University, AI, Sentiment Analysis, Trend Analysis, Women Safety, Batch 220, Capstone" />
+  <meta name="author" content="Batch 220" />
 
-<!-- Open Graph / Facebook / Google (Rich Snippet Logo) -->
-<meta property="og:type" content="website"/>
-<meta property="og:url" content="https://capstone-project-220-batch.vercel.app/"/>
-<meta property="og:title" content="CAPSTONE PROJECT-220 | KL University"/>
-<meta property="og:description" content="AI-Based Social Media Sentiment and Trend Analysis Platform by KL University Batch 220."/>
-<meta property="og:image" content="https://capstone-project-220-batch.vercel.app/logo.jpeg"/>
+  <link rel="icon" type="image/jpeg" href="capstone_logo.jpeg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <!-- Google reCAPTCHA API -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image"/>
-<meta property="twitter:url" content="https://capstone-project-220-batch.vercel.app/"/>
-<meta property="twitter:title" content="CAPSTONE PROJECT-220 | KL University"/>
-<meta property="twitter:description" content="AI-Based Social Media Sentiment and Trend Analysis Platform by KL University Batch 220."/>
-<meta property="twitter:image" content="https://capstone-project-220-batch.vercel.app/logo.jpeg"/>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-<link rel="icon" type="image/png" sizes="192x192" href="favicon.png"/>
-<link rel="shortcut icon" href="favicon.ico"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    const firebaseConfig = {
+      apiKey: "AIzaSyARQOk-L_G0hxtuwddfcnpoxbPTnRMtUno",
+      authDomain: "capstone-batch-220.firebaseapp.com",
+      projectId: "capstone-batch-220",
+      storageBucket: "capstone-batch-220.firebasestorage.app",
+      messagingSenderId: "6386291212",
+      appId: "1:6386291212:web:8acc51863603a9a3d81429",
+      measurementId: "G-XV9HTK9TMM"
+    };
 
-<!-- ✅ PASTE YOUR FIREBASE CONFIG BELOW (Step 4 from instructions) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  const firebaseConfig = {
-    apiKey:            "AIzaSyARQOk-L_G0hxtuwddfcnpoxbPTnRMtUno",
-    authDomain:        "capstone-batch-220.firebaseapp.com",
-    projectId:         "capstone-batch-220",
-    storageBucket:     "capstone-batch-220.firebasestorage.app",
-    messagingSenderId: "6386291212",
-    appId:             "1:6386291212:web:8acc51863603a9a3d81429",
-    measurementId:     "G-XV9HTK9TMM"
-  };
+    const GOOGLE_ALLOWED_EMAILS = new Set([
+      "2300032267@kluniversity.in",
+      "2300033278@kluniversity.in",
+      "2300030988@kluniversity.in",
+      "2300033848@kluniversity.in",
+      "2300032512@kluniversity.in",
+      "msubbarao@kluniversity.in",
+    ]);
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+    const MICROSOFT_ALLOWED_EMAILS = new Set([
+      "2300032267@kluniversity.in",
+      "2300033278@kluniversity.in",
+      "2300030988@kluniversity.in",
+      "2300033848@kluniversity.in",
+      "2300032512@kluniversity.in",
+      "msubbarao@kluniversity.in",
+    ]);
 
-  // Redirect only if already logged in AND email is authorised
-  // (prevents race condition where onAuthStateChanged fires before allowlist check)
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const rawEmail = user.email || user.providerData?.[0]?.email || "";
-      const email = rawEmail.toLowerCase().trim();
-      if (ALLOWED_EMAILS.has(email)) {
-        window.location.href = "index.html";
+    const ALLOWED_EMAILS = new Set([...GOOGLE_ALLOWED_EMAILS, ...MICROSOFT_ALLOWED_EMAILS]);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const rawEmail = user.email || user.providerData?.[0]?.email || "";
+        const email = rawEmail.toLowerCase().trim();
+        if (ALLOWED_EMAILS.has(email)) {
+          window.location.href = "index.html";
+        }
       }
-    }
-  });
-
-  // ── GOOGLE: all 6 (5 members + mentor) ─────────────────────────────────
-  const GOOGLE_ALLOWED_EMAILS = new Set([
-    "2300032267@kluniversity.in",  // Kokkiligadda Tulasi Venkata Durga
-    "2300033278@kluniversity.in",  // Badam Sudheer Reddy
-    "2300030988@kluniversity.in",  // Garikapati Satya Karthika
-    "2300033848@kluniversity.in",  // Mitta Kavya Nayana
-    "2300032512@kluniversity.in",  // Inti Hanitha Sai Gayathri
-    "msubbarao@kluniversity.in",   // Mentor – Mr. M. Subba Rao
-  ]);
-
-  // ── MICROSOFT: all 6 (5 members + mentor) ───────────────────────────────
-  const MICROSOFT_ALLOWED_EMAILS = new Set([
-    "2300032267@kluniversity.in",  // Kokkiligadda Tulasi Venkata Durga
-    "2300033278@kluniversity.in",  // Badam Sudheer Reddy
-    "2300030988@kluniversity.in",  // Garikapati Satya Karthika
-    "2300033848@kluniversity.in",  // Mitta Kavya Nayana
-    "2300032512@kluniversity.in",  // Inti Hanitha Sai Gayathri
-    "msubbarao@kluniversity.in",   // Mentor – Mr. M. Subba Rao
-  ]);
-
-  // Combined set used by onAuthStateChanged redirect check
-  const ALLOWED_EMAILS = new Set([...GOOGLE_ALLOWED_EMAILS, ...MICROSOFT_ALLOWED_EMAILS]);
-
-  // ── Shared sign-in helper ────────────────────────────────────────────────
-  async function handleProviderSignIn(provider, providerName, allowedSet) {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      // user.email can be null for some Microsoft accounts — fall back to providerData
-      const rawEmail = user.email
-        || user.providerData?.[0]?.email
-        || "";
-      const email = rawEmail.toLowerCase().trim();
-
-      // ── STRICT ALLOWLIST CHECK ────────────────────────────────────────────
-      if (!allowedSet.has(email)) {
-        await signOut(auth);   // immediately revoke the session
-        throw new Error(
-          `Access Denied. "${rawEmail || 'unknown'}" is not authorised for ${providerName} login.`
-        );
-      }
-
-      sessionStorage.setItem("capstone_user", user.displayName || rawEmail.split("@")[0]);
-      window.location.href = "index.html";
-    } catch (err) {
-      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
-        throw new Error("Sign-in cancelled.");
-      }
-      if (err.code === 'auth/account-exists-with-different-credential') {
-        throw new Error("This email is already registered with a different sign-in method. Please use the other login button (Google or Microsoft).");
-      }
-      if (err.code === 'auth/popup-blocked') {
-        throw new Error("Popup was blocked by your browser. Please allow popups for this site and try again.");
-      }
-      throw new Error(err.message || `${providerName} Sign-In failed. Please try again.`);
-    }
-  }
-
-  // Expose Google Login handler globally
-  window.firebaseGoogleLogin = async function() {
-    const provider = new GoogleAuthProvider();
-    // Force account picker every time so users can switch accounts
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await handleProviderSignIn(provider, 'Google', GOOGLE_ALLOWED_EMAILS);
-  };
-
-  // Expose Microsoft Login handler globally (5 members only)
-  window.fireMicrosoftLogin = async function() {
-    const provider = new OAuthProvider('microsoft.com');
-    provider.setCustomParameters({
-      prompt: 'select_account',
-      tenant: 'common'
     });
-    // Request email scope so Microsoft returns the user's email address
-    provider.addScope('email');
-    provider.addScope('openid');
-    provider.addScope('profile');
-    await handleProviderSignIn(provider, 'Microsoft', MICROSOFT_ALLOWED_EMAILS);
-  };
-</script>
 
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --accent: #6366f1; --accent-hover: #4f46e5;
-    --bg: #0f0f13; --card: rgba(255,255,255,0.04);
-    --border: rgba(255,255,255,0.09);
-    --text-primary: #f1f1f3; --text-secondary: #9ca3af;
-    --error: #f87171;
-  }
-  body {
-    font-family: 'Inter', sans-serif; background: var(--bg);
-    min-height: 100vh; display: flex; align-items: center;
-    justify-content: center; overflow: hidden; position: relative;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 20%, rgba(255, 153, 51, 0.15) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(19, 136, 8, 0.15) 0%, transparent 60%);
-    animation: bgShift 8s ease-in-out infinite alternate; pointer-events: none;
-  }
-  @keyframes bgShift {
-    0%  { opacity: 0.8; transform: scale(1); }
-    100%{ opacity: 1;   transform: scale(1.04); }
-  }
-  .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
-  .particle {
-    position: absolute; border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25); animation: float linear infinite;
-  }
-  @keyframes float {
-    0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-    10%  { opacity: 1; } 90% { opacity: 1; }
-    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
-  }
-  .login-card {
-    --text-primary: #111827;
-    --text-secondary: #4b5563;
-    --border: rgba(0,0,0,0.1);
-    position: relative; z-index: 10; 
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 48px 44px; width: 440px; max-width: calc(100vw - 32px);
-    backdrop-filter: blur(24px);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 32px 64px rgba(0,0,0,0.2), 0 0 80px rgba(255, 255, 255, 0.2);
-    animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0)    scale(1); }
-  }
-  .logo-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 32px; }
-  .logo-img {
-    width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
-    border: 2px solid var(--accent); box-shadow: 0 0 18px rgba(99,102,241,0.4);
-  }
-  .logo-text h1 { font-size: 15px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
-  .logo-text p  { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
-  .card-heading { margin-bottom: 28px; text-align: center; }
-  .card-heading h2 { font-size: 26px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.03em; }
-  .card-heading p  { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
-  .form-group { margin-bottom: 18px; }
-  label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; }
-  input {
-    width: 100%; padding: 13px 16px; background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border); border-radius: 12px;
-    color: var(--text-primary); font-size: 15px; font-family: 'Inter', sans-serif;
-    outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-  }
-  input::placeholder { color: rgba(255,255,255,0.25); }
-  input:focus { border-color: var(--accent); background: rgba(99,102,241,0.07); box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
-  input.error-field { border-color: var(--error); }
-  .password-wrap { position: relative; }
-  .password-wrap input { padding-right: 46px; }
-  .btn-eye {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; padding: 4px;
-    color: var(--text-secondary); display: flex; align-items: center; transition: color 0.2s;
-  }
-  .btn-eye:hover { color: var(--text-primary); }
-  .error-msg {
-    display: none; align-items: center; gap: 8px;
-    background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25);
-    border-radius: 10px; padding: 12px 14px; font-size: 13px;
-    color: var(--error); margin-bottom: 18px;
-  }
-  .error-msg.show { display: flex; animation: shake 0.4s ease; }
-  @keyframes shake { 0%,100%{ transform: translateX(0); } 25%{ transform: translateX(-6px); } 75%{ transform: translateX(6px); } }
-  .btn-google, .btn-microsoft {
-    width: 100%; padding: 14px;
-    border-radius: 12px;
-    font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    position: relative;
-  }
-  .btn-google {
-    background: #FF9933; border: 1px solid #e68a2e;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(255,153,51,0.2); margin-top: 8px;
-  }
-  .btn-google:hover:not(:disabled) { background: #ffaa4d; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,153,51,0.3); }
-  .btn-google:active { transform: translateY(0); }
-  .btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-google.loading span { opacity: 0; }
-  .btn-google.loading::after {
-    content: ''; position: absolute;
-    width: 20px; height: 20px;
-    border: 2px solid rgba(255,255,255,0.2); border-top-color: #ffffff;
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-  }
-  .btn-microsoft {
-    background: #138808; border: 1px solid #117a07;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(19,136,8,0.2); margin-top: 12px;
-  }
-  .btn-microsoft:hover:not(:disabled) { background: #18a30a; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(19,136,8,0.3); }
-  .btn-microsoft:active { transform: translateY(0); }
-  .btn-microsoft:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-microsoft.loading span { opacity: 0; }
-  .btn-microsoft.loading::after {
-    content: ''; position: absolute;
-    width: 20px; height: 20px;
-    border: 2px solid rgba(255,255,255,0.2); border-top-color: #ffffff;
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 18px 0 4px;
-  }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
-  .divider span { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
-  .access-note {
-    margin-top: 20px; text-align: center; font-size: 12px;
-    color: var(--text-secondary); background: rgba(99,102,241,0.07);
-    border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; padding: 12px 16px;
-  }
-  .access-note strong { color: var(--accent-hover); }
-  .card-footer { margin-top: 28px; text-align: center; font-size: 12px; color: var(--text-secondary); }
-  .watermark {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 15vw;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.02);
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 0;
-    user-select: none;
-  }
-  .interactive-bubble {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 5;
-    transform: translate(-50%, -50%) scale(0);
-    animation: popBubble 1.5s ease-out forwards;
-  }
-  @keyframes popBubble {
-    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-    50% { transform: translate(-50%, calc(-50% - 50px)) scale(1); opacity: 0.8; }
-    100% { transform: translate(-50%, calc(-50% - 100px)) scale(1.2); opacity: 0; }
-  }
-</style>
+    async function handleProviderSignIn(provider, providerName, allowedSet) {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const rawEmail = user.email || user.providerData?.[0]?.email || "";
+        const email = rawEmail.toLowerCase().trim();
+
+        if (!allowedSet.has(email)) {
+          await signOut(auth);
+          throw new Error(`Access Denied. "${rawEmail || 'unknown'}" is not authorised for ${providerName} login.`);
+        }
+
+        sessionStorage.setItem("capstone_user", user.displayName || rawEmail.split("@")[0]);
+        window.location.href = "index.html";
+      } catch (err) {
+        if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+          throw new Error("Sign-in cancelled.");
+        }
+        if (err.code === 'auth/account-exists-with-different-credential') {
+          throw new Error("This email is already registered with a different sign-in method.");
+        }
+        if (err.code === 'auth/popup-blocked') {
+          throw new Error("Popup was blocked by your browser. Please allow popups for this site and try again.");
+        }
+        throw new Error(err.message || `${providerName} Sign-In failed. Please try again.`);
+      }
+    }
+
+    window.firebaseGoogleLogin = async function () {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      await handleProviderSignIn(provider, 'Google', GOOGLE_ALLOWED_EMAILS);
+    };
+
+    window.fireMicrosoftLogin = async function () {
+      const provider = new OAuthProvider('microsoft.com');
+      provider.setCustomParameters({ prompt: 'select_account', tenant: 'common' });
+      provider.addScope('email');
+      provider.addScope('openid');
+      provider.addScope('profile');
+      await handleProviderSignIn(provider, 'Microsoft', MICROSOFT_ALLOWED_EMAILS);
+    };
+  </script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px;
+      background: #0D0D0D;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 20% 30%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(255, 153, 51, 0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Full-screen watermark */
+    .watermark {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 40px 80px;
+      transform: rotate(-15deg);
+      opacity: 0.07;
+    }
+
+    .watermark span {
+      font-size: 25px;
+      font-family: "Times New Roman", Times, serif;
+      font-weight: 800;
+      color: white;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* Main split card */
+    .login-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      min-height: min(620px, 95vh);
+      background: #FFFFFF;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      animation: cardIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      margin: auto 0;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ── LEFT: Form panel ── */
+    .form-panel {
+      flex: 1;
+      padding: 36px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4F46E5;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .brand .kl-logo {
+      width: 96px;
+      /* ≈ 3cm at 96dpi, slightly reduced for fit */
+      height: 96px;
+      object-fit: contain;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .welcome h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    /* Error */
+    .error-msg {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #EF4444;
+      margin-bottom: 24px;
+    }
+
+    .error-msg.show {
+      display: flex;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-6px);
+      }
+
+      75% {
+        transform: translateX(6px);
+      }
+    }
+
+    /* Buttons */
+    .social-btn {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1.5px solid #E2E8F0;
+      background: #F8FAFC;
+      color: #0F172A;
+      margin-bottom: 12px;
+    }
+
+    .social-btn:hover:not(:disabled) {
+      background: #EEF2FF;
+      border-color: #A5B4FC;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+    }
+
+    .social-btn:active {
+      transform: translateY(0);
+    }
+
+    .social-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .access-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #334155;
+      font-weight: 500;
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      border-radius: 10px;
+      padding: 10px 14px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .access-note strong {
+      color: #4F46E5;
+      font-weight: 700;
+    }
+
+    .card-footer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #CBD5E1;
+      text-align: center;
+    }
+
+    /* ── RIGHT: Logo image panel ── */
+    .image-panel {
+      flex: 1;
+      background: #0F172A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      gap: 28px;
+    }
+
+    .image-panel img.logo-big {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(99, 102, 241, 0.6);
+      box-shadow:
+        0 0 0 12px rgba(99, 102, 241, 0.08),
+        0 0 60px rgba(99, 102, 241, 0.3),
+        0 24px 48px rgba(0, 0, 0, 0.5);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 12px rgba(99, 102, 241, 0.08), 0 0 60px rgba(99, 102, 241, 0.3), 0 24px 48px rgba(0, 0, 0, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 20px rgba(99, 102, 241, 0.12), 0 0 80px rgba(99, 102, 241, 0.45), 0 24px 48px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .image-panel .panel-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #F1F5F9;
+      text-align: center;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .image-panel .panel-subtitle {
+      font-size: 13px;
+      color: #94A3B8;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media (max-width: 780px) {
+      body {
+        padding: 16px;
+        align-items: flex-start;
+      }
+
+      .login-container {
+        flex-direction: column;
+        min-height: unset;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      /* On mobile: show logo panel as a compact top banner */
+      .image-panel {
+        display: flex;
+        flex: none;
+        background: #0F172A;
+        padding: 28px 24px 24px;
+        gap: 14px;
+      }
+
+      .image-panel img.logo-big {
+        width: 90px;
+        height: 90px;
+        animation: none;
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+      }
+
+      .image-panel .panel-title {
+        font-size: 15px;
+      }
+
+      .image-panel .panel-subtitle {
+        font-size: 12px;
+      }
+
+      .form-panel {
+        padding: 28px 24px 32px;
+      }
+
+      /* Hide KL logo in brand on mobile (already shown in top panel) */
+      .brand .kl-logo {
+        display: none;
+      }
+
+      .brand {
+        margin-bottom: 20px;
+      }
+
+      .welcome h1 {
+        font-size: 22px;
+      }
+
+      .welcome p {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .form-panel {
+        padding: 24px 18px 28px;
+      }
+
+      .image-panel {
+        padding: 22px 18px 20px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="watermark">BATCH 220</div>
-<div class="particles" id="particles"></div>
+  <!-- Full-screen watermark -->
+  <div class="watermark">
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+    <span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220 BATCH</span><span>CAPSTONE PROJECT 220
+      BATCH</span>
+  </div>
 
-<div class="login-card">
-  <div class="logo-wrap">
-    <img src="favicon.png" alt="Logo" class="logo-img"/>
-    <div class="logo-text">
-      <h1>CAPSTONE PROJECT 220</h1>
-      <p>AI Sentiment Analysis | KL University</p>
+  <!-- Split container -->
+  <div class="login-container">
+
+    <!-- LEFT — Form -->
+    <div class="form-panel">
+
+      <div class="brand">
+        <img src="kl_logo.png" alt="KL University Logo" class="kl-logo" />
+        <span>CAPSTONE PROJECT 220 · KL UNIVERSITY</span>
+      </div>
+
+      <div class="welcome">
+        <h1>Welcome Back</h1>
+        <p>Sign in with your authorised KL University account to access the AI Sentiment Analysis Platform on Women
+          Safety.</p>
+      </div>
+
+      <div class="error-msg" id="error-msg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span id="error-text">Something went wrong. Please try again.</span>
+      </div>
+
+      <!-- Google reCAPTCHA v2 Widget -->
+      <div style="display:flex; justify-content:center; margin-bottom: 20px;">
+        <!-- Using your official Site Key -->
+        <div class="g-recaptcha" data-sitekey="6LdEiI8tAAAAABvvE2JPuupIpp1wvKwegKZlnFbo"></div>
+      </div>
+
+    <button class="social-btn" id="btn-google" type="button" onclick="handleGoogleLogin(event)">
+      <svg width="22" height="22" viewBox="0 0 48 48">
+        <path fill="#EA4335"
+          d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+        <path fill="#4285F4"
+          d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+        <path fill="#FBBC05"
+          d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+        <path fill="#34A853"
+          d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+        <path fill="none" d="M0 0h48v48H0z" />
+      </svg>
+      Sign in with Google
+    </button>
+
+    <button class="social-btn" id="btn-microsoft" type="button" onclick="handleMicrosoftLogin(event)">
+      <svg width="22" height="22" viewBox="0 0 23 23">
+        <path fill="#f3f3f3" d="M0 0h23v23H0z" />
+        <path fill="#f35325" d="M1 1h10v10H1z" />
+        <path fill="#81bc06" d="M12 1h10v10H12z" />
+        <path fill="#05a6f0" d="M1 12h10v10H1z" />
+        <path fill="#ffba08" d="M12 12h10v10H12z" />
+      </svg>
+      Sign in with Microsoft
+    </button>
+
+    <div class="access-note">
+      🔒 <strong>Restricted Access</strong> — Only authorised <strong>@kluniversity.in</strong> accounts (Batch 220
+      members &amp; mentor) can sign in.
     </div>
+
+    <div class="card-footer">© 2026 Capstone Project 220 — KL University</div>
+
   </div>
 
-  <div class="card-heading">
-    <h2>Welcome</h2>
-    <p>Sign in with your team email to access the report</p>
+  <!-- RIGHT — Capstone Logo Panel -->
+  <div class="image-panel">
+    <img class="logo-big" src="capstone_logo.jpeg" alt="Capstone Project 220 Logo" />
+    <div class="panel-title">AI-Based Social Media Sentiment &amp; Trend Analysis Platform</div>
+    <div class="panel-subtitle">On Women Safety · Batch 220 · KL University</div>
   </div>
 
-  <div class="error-msg" id="error-msg">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span id="error-text">Invalid credentials. Please try again.</span>
   </div>
 
-  <form id="login-form" onsubmit="handleLogin(event)">
-    <button class="btn-google" type="button" id="btn-google" onclick="handleGoogleLogin(event)">
-      <svg width="24" height="24" viewBox="0 0 48 48">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        <path fill="none" d="M0 0h48v48H0z"/>
-      </svg>
-      <span>Sign in with Google</span>
-    </button>
+  <script>
+    async function triggerLogin(btnId, loginFn) {
+      const btn = document.getElementById(btnId);
+      const errBox = document.getElementById('error-msg');
+      const errText = document.getElementById('error-text');
 
-    <div class="divider"><span>or</span></div>
+      errBox.classList.remove('show');
 
-    <button class="btn-microsoft" type="button" id="btn-microsoft" onclick="handleMicrosoftLogin(event)">
-      <!-- Microsoft "Fluent" logo -->
-      <svg width="22" height="22" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-        <path fill="#f35325" d="M1 1h10v10H1z"/>
-        <path fill="#81bc06" d="M12 1h10v10H12z"/>
-        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-        <path fill="#ffba08" d="M12 12h10v10H12z"/>
-      </svg>
-      <span>Sign in with Microsoft</span>
-    </button>
-  </form>
+      // 1. Validate reCAPTCHA first
+      if (typeof grecaptcha !== 'undefined') {
+        const recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+          errText.textContent = "Please complete the reCAPTCHA verification to prove you are human.";
+          errBox.classList.add('show');
+          return;
+        }
+      }
 
-  <div class="access-note">
-    🔒 <strong>Restricted Access</strong> — Batch 220 has <strong>5 members</strong> &amp; mentor. Sign in using your <strong>@kluniversity.in</strong> Google or Microsoft account.
-  </div>
-
-  <div class="card-footer">© 2026 Capstone Project 220 — KL University</div>
-</div>
-
-<script>
-  // Particles
-  const container = document.getElementById('particles');
-  const colors = ['rgba(255, 153, 51, 0.3)', 'rgba(255, 255, 255, 0.3)', 'rgba(19, 136, 8, 0.3)'];
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 6 + 3;
-    const color = colors[i % colors.length];
-    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${color};animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*10}s;opacity:${Math.random()*0.4+0.1};`;
-    container.appendChild(p);
-  }
-
-  // Interactive Cursor Bubbles
-  let lastBubbleTime = 0;
-  document.addEventListener('mousemove', (e) => {
-    const now = Date.now();
-    if (now - lastBubbleTime > 50 && Math.random() > 0.5) { // Limit bubble creation rate
-      lastBubbleTime = now;
-      const bubble = document.createElement('div');
-      bubble.className = 'interactive-bubble';
-      bubble.style.left = `${e.clientX}px`;
-      bubble.style.top = `${e.clientY}px`;
-      
-      const size = Math.random() * 20 + 10;
-      bubble.style.width = `${size}px`;
-      bubble.style.height = `${size}px`;
-      
-      const colorOpts = [
-        { c: 'rgba(255, 153, 51, 0.4)', s: 'rgba(255, 153, 51, 0.6)' }, // Saffron
-        { c: 'rgba(255, 255, 255, 0.4)', s: 'rgba(255, 255, 255, 0.6)' }, // White
-        { c: 'rgba(19, 136, 8, 0.4)', s: 'rgba(19, 136, 8, 0.6)' } // Green
-      ];
-      const randColor = colorOpts[Math.floor(Math.random() * colorOpts.length)];
-      bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), ${randColor.c})`;
-      bubble.style.boxShadow = `0 0 15px ${randColor.s}, inset 0 0 10px rgba(255,255,255,0.5)`;
-      
-      document.body.appendChild(bubble);
-      
-      setTimeout(() => {
-        bubble.remove();
-      }, 1500);
-    }
-  });
-
-  async function triggerLogin(btnId, loginFn) {
-    const btn     = document.getElementById(btnId);
-    const errBox  = document.getElementById('error-msg');
-    const errText = document.getElementById('error-text');
-
-    // Disable both buttons during sign-in
-    ['btn-google','btn-microsoft'].forEach(id => {
-      const b = document.getElementById(id);
-      b.disabled = true;
-    });
-    errBox.classList.remove('show');
-    btn.classList.add('loading');
-
-    try {
-      await loginFn();
-    } catch (err) {
-      btn.classList.remove('loading');
-      ['btn-google','btn-microsoft'].forEach(id => {
-        document.getElementById(id).disabled = false;
+      ['btn-google', 'btn-microsoft'].forEach(id => {
+        document.getElementById(id).disabled = true;
       });
-      errText.textContent = err.message;
-      errBox.classList.add('show');
+
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" style="animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="9" stroke-dasharray="28 28" stroke-dashoffset="14"/></svg> Please wait…`;
+
+      try {
+        await loginFn();
+      } catch (err) {
+        btn.innerHTML = originalHTML;
+        ['btn-google', 'btn-microsoft'].forEach(id => {
+          document.getElementById(id).disabled = false;
+        });
+        errText.textContent = err.message;
+        errBox.classList.add('show');
+
+        // Reset reCAPTCHA on failure so they can try again
+        if (typeof grecaptcha !== 'undefined') {
+          grecaptcha.reset();
+        }
+      }
     }
-  }
 
-  function handleLogin(e) { if (e) e.preventDefault(); }
-
-  function handleGoogleLogin(e) {
-    if (e) e.preventDefault();
-    triggerLogin('btn-google', window.firebaseGoogleLogin);
-  }
-
-  function handleMicrosoftLogin(e) {
-    if (e) e.preventDefault();
-    triggerLogin('btn-microsoft', window.fireMicrosoftLogin);
-  }
-</script>
+    function handleGoogleLogin(e) { if (e) e.preventDefault(); triggerLogin('btn-google', window.firebaseGoogleLogin); }
+    function handleMicrosoftLogin(e) { if (e) e.preventDefault(); triggerLogin('btn-microsoft', window.fireMicrosoftLogin); }
+  </script>
+  <style>
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "sentiment-analysis-platform",
   "buildCommand": null,
   "outputDirectory": "report",
   "framework": null
