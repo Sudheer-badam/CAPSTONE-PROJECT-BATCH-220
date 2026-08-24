@@ -1,0 +1,5 @@
+text = open('index.html', 'r', encoding='utf-8').read()
+script_pos = text.find("const grid = document.getElementById('pdf-grid');")
+grid_pos = text.find('id="pdf-grid"')
+print('Script pos:', script_pos)
+print('Grid pos:', grid_pos)
