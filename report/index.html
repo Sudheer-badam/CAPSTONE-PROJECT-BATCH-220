@@ -621,7 +621,7 @@
 
         async function initSlides() {
           try {
-            const res = await fetch('/api/ppt-state');
+            const res = await fetch('/ppt_state.json');
             const state = await res.json();
             
             const wrapper = document.getElementById('dynamic-slides-wrapper');
@@ -797,7 +797,7 @@
 
       async function fetchPapers() {
         try {
-          const res = await fetch('/api/papers');
+          const res = await fetch('/papers_state.json');
           const papers = await res.json();
           const grid = document.getElementById('pdf-grid');
           
