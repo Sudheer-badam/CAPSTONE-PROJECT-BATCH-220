@@ -76,7 +76,7 @@
             if (codeBox && codeBox.disabled) codeBox.value = studentData.code_work || "";
             if (theoryBox && theoryBox.disabled) theoryBox.value = studentData.theory_work || "";
             if (captionBox && captionBox.disabled) captionBox.value = studentData.diagram_caption || "";
-            if (urlBox && codeBox.disabled) {
+            if (urlBox && (!theoryBox || theoryBox.disabled)) {
                 urlBox.value = studentData.diagram_url || "";
                 if (studentData.diagram_caption) {
           compiledText += `\n  * Photo Caption: ${studentData.diagram_caption}`;
@@ -110,7 +110,6 @@
       
       compiledText += `👤 ${student.name} (${student.id}):\n`;
       if (code || theory) {
-        if (code) compiledText += `[Code Work]: ${code}\n`;
         if (theory) compiledText += `[Theory Work]: ${theory}\n`;
       } else {
         compiledText += "No updates provided yet.\n";
@@ -188,12 +187,12 @@ window.saveContributions = async function() {
       
       if (!codeBox) continue;
       
-      let diagramUrl = urlBox.value;
+      let diagramUrl = urlBox ? urlBox.value : "";
       let captionText = captionBox ? captionBox.value : "";
       
       payload[student.id] = {
         code_work: codeBox.value,
-        theory_work: theoryBox.value,
+        theory_work: theoryBox ? theoryBox.value : "",
         diagram_url: diagramUrl,
         diagram_caption: captionText
       };
@@ -260,8 +259,7 @@ window.editContrib = function(id) {
 window.saveContrib = function(id) {
   const contentDiv = document.getElementById('content-' + id);
   if (!contentDiv) return;
-  contentDiv.style.pointerEvents = 'none';
-  contentDiv.style.opacity = '0.6';
+  
   
   document.getElementById(`code-${id}`).disabled = true;
   document.getElementById(`theory-${id}`).disabled = true;

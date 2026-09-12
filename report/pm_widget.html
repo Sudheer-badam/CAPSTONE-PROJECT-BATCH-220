@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Management Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0B0F19;
+      --widget-bg: rgba(22, 28, 45, 0.6);
+      --widget-border: rgba(255, 255, 255, 0.08);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent: #6366F1;
+      --accent-hover: #4F46E5;
+      
+      --tag-high-bg: rgba(239, 68, 68, 0.15);
+      --tag-high-text: #FCA5A5;
+      --tag-med-bg: rgba(245, 158, 11, 0.15);
+      --tag-med-text: #FCD34D;
+      --tag-low-bg: rgba(16, 185, 129, 0.15);
+      --tag-low-text: #6EE7B7;
+      
+      --cat-design-bg: rgba(139, 92, 246, 0.15);
+      --cat-design-text: #C4B5FD;
+      --cat-dev-bg: rgba(59, 130, 246, 0.15);
+      --cat-dev-text: #93C5FD;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.1), transparent 25%);
+    }
+
+    .widget-container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--widget-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--widget-border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .widget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .header-left p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .btn-new-task {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-new-task:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .icon-blue { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
+    .icon-green { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+    .icon-orange { background: rgba(249, 115, 22, 0.15); color: #FB923C; }
+
+    .stat-info h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .stat-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Tasks Header */
+    .tasks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .tasks-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .task-filters {
+      display: flex;
+      gap: 12px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .filter-btn.active {
+      color: var(--text-main);
+    }
+    
+    .filter-btn:hover {
+      color: var(--text-main);
+    }
+
+    /* Task List */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .task-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(4px);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Checkbox */
+    .custom-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .task-item:hover .custom-checkbox {
+      border-color: var(--accent);
+    }
+
+    .task-item.completed .custom-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .task-item.completed .custom-checkbox::after {
+      content: '';
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) translateY(-1px);
+    }
+
+    .task-details h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .task-item.completed .task-details h4 {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Priorities */
+    .tag.high { background: var(--tag-high-bg); color: var(--tag-high-text); }
+    .tag.med { background: var(--tag-med-bg); color: var(--tag-med-text); }
+    .tag.low { background: var(--tag-low-bg); color: var(--tag-low-text); }
+
+    /* Categories */
+    .tag.design { background: var(--cat-design-bg); color: var(--cat-design-text); }
+    .tag.dev { background: var(--cat-dev-bg); color: var(--cat-dev-text); }
+
+    .due-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .task-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Avatars */
+    .avatar-group {
+      display: flex;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--widget-bg);
+      background: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: -10px;
+      transition: transform 0.2s;
+      object-fit: cover;
+    }
+
+    .avatar:first-child { margin-left: 0; }
+    
+    .avatar-group:hover .avatar {
+      transform: translateX(4px);
+    }
+    
+    .avatar-group:hover .avatar:hover {
+      transform: translateY(-4px) translateX(4px);
+      z-index: 10;
+    }
+
+    .btn-options {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-options:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="widget-container">
+    
+    <!-- Header -->
+    <header class="widget-header">
+      <div class="header-left">
+        <h2>Team Collaboration</h2>
+        <p>Manage your capstone projects & tasks effectively.</p>
+      </div>
+      <button class="btn-new-task">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        New Task
+      </button>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon icon-blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <div class="stat-info">
+          <h3>24</h3>
+          <p>Active Tasks</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <div class="stat-info">
+          <h3>8</h3>
+          <p>In Progress</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="stat-info">
+          <h3>42</h3>
+          <p>Completed</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks List Section -->
+    <div class="tasks-header">
+      <div class="tasks-title">Recent Tasks</div>
+      <div class="task-filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">To Do</button>
+        <button class="filter-btn">In Progress</button>
+      </div>
+    </div>
+
+    <div class="task-list">
+      
+      <!-- Task 1 -->
+      <div class="task-item">
+        <div class="task-left">
+          <div class="custom-checkbox"></div>
+          <div class="task-details">
+            <h4>Design Dashboard UI</h4>
+            <div class="task-meta">
+              <span class="tag high">High</span>
+              <span class="tag design">Design</span>
+              <span class="due-date">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Oct 24
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="task-right">
+          <div class="avatar-group">
+            <div class="avatar" style="background: #EC4899; color: white;">JD</div>
+            <div class="avatar" style="background: #8B5CF6; color: white;">AS</div>
+          </div>
+          <button class="btn-options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task 2 -->
+      <div class="task-item">
+        <div class="task-left">
+          <div class="custom-checkbox"></div>
+          <div class="task-details">
+            <h4>Implement Sentiment Analysis API Integration</h4>
+            <div class="task-meta">
+              <span class="tag high">High</span>
+              <span class="tag dev">Development</span>
+              <span class="due-date">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Oct 25
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="task-right">
+          <div class="avatar-group">
+            <div class="avatar" style="background: #3B82F6; color: white;">RK</div>
+          </div>
+          <button class="btn-options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task 3 -->
+      <div class="task-item completed">
+        <div class="task-left">
+          <div class="custom-checkbox"></div>
+          <div class="task-details">
+            <h4>Update Login Page UI</h4>
+            <div class="task-meta">
+              <span class="tag med">Medium</span>
+              <span class="tag design">Design</span>
+              <span class="due-date">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Oct 22
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="task-right">
+          <div class="avatar-group">
+            <div class="avatar" style="background: #10B981; color: white;">MN</div>
+            <div class="avatar" style="background: #F59E0B; color: white;">ST</div>
+          </div>
+          <button class="btn-options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task 4 -->
+      <div class="task-item">
+        <div class="task-left">
+          <div class="custom-checkbox"></div>
+          <div class="task-details">
+            <h4>Create Final Presentation Slides</h4>
+            <div class="task-meta">
+              <span class="tag low">Low</span>
+              <span class="tag dev">Documentation</span>
+              <span class="due-date">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Oct 28
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="task-right">
+          <div class="avatar-group">
+            <div class="avatar" style="background: #3B82F6; color: white;">RK</div>
+            <div class="avatar" style="background: #EC4899; color: white;">JD</div>
+            <div class="avatar" style="background: #64748B; color: white;">+2</div>
+          </div>
+          <button class="btn-options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Add simple interaction to toggle task completion
+    document.querySelectorAll('.task-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Prevent toggle if clicking options button
+        if (e.target.closest('.btn-options')) return;
+        this.classList.toggle('completed');
+      });
+    });
+
+    // Add filter button interactions
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -60,7 +60,7 @@
       console.warn("DEV BYPASS ACTIVE: Simulating logged-in user.");
       window._currentUserEmail = "dev@kluniversity.in";
       window._currentUserName  = "Local Developer";
-      document.getElementById("user-name").textContent = window._currentUserName;
+      document.getElementById("user-name")?.textContent = window._currentUserName;
       document.getElementById("user-initials").textContent = "D";
       document.getElementById("user-initials").style.display = "flex";
       document.getElementById("user-avatar").style.display = "none";
@@ -78,7 +78,7 @@
       // Populate user profile in header
       const name  = user.displayName || sessionStorage.getItem("capstone_user") || email.split("@")[0];
       const photo = user.photoURL;
-      document.getElementById("user-name").textContent = name;
+      document.getElementById("user-name")?.textContent = name;
       
       // Store user info globally for diary tracking
       window._currentUserEmail = user.email || user.providerData?.[0]?.email || email;
@@ -371,7 +371,11 @@
   }
 
   @media (max-width: 680px) {
-    header { padding: 0 16px; }
+    header { height: auto; min-height: 64px; padding: 10px 16px; }
+    .header-left .h-logo-kl { display: none; }
+    .header-left .h-subtitle { display: none; }
+    #server-status-text { display: none; }
+    #user-name { display: none; }
     main   { padding: 20px 16px 48px; }
     .hero  { flex-direction: column; padding: 28px 24px; gap: 20px; }
     .hero img { width: 72px; height: 72px; }
@@ -967,32 +971,14 @@
       <!-- Student Mitta Kavya Nayana -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-          <button onclick="editContrib('2300033848')" id="btn-edit-2300033848" style="padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
+          <button onclick="editContrib('2300033848')" id="btn-edit-2300033848" style="display: none; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
           <button onclick="saveContrib('2300033848')" id="btn-save-2300033848" style="display: none; padding: 4px 8px; font-size: 11px; background: var(--accent); border: none; color: white; border-radius: 4px; cursor: pointer;">Save</button>
         </div>
         <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Mitta Kavya Nayana</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300033848@kluniversity.in</div>
         
-        <div id="content-2300033848" style="pointer-events: none; opacity: 0.6; transition: 0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text2);">Code Work:</label>
-          <div style="display:flex; gap:8px;">
-            <select id="lang-2300033848" onchange="changeLanguage('2300033848')" style="background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-size:12px; outline:none;">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-            </select>
-            <button id="btn-run-2300033848" onclick="runCode('2300033848')" style="background:var(--accent); color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:12px; cursor:pointer; font-weight:bold;">▶ Run</button>
-          </div>
-        </div>
-        <div id="editor-container-2300033848" style="width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px;"></div>
-        <textarea spellcheck="true" id="code-2300033848" style="display:none;" disabled></textarea>
-        <div id="output-wrapper-2300033848" style="display:none; margin-bottom: 12px;">
-            <div style="font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: bold;">Execution Output:</div>
-            <pre id="output-2300033848" style="width: 100%; min-height: 40px; max-height: 150px; overflow-y: auto; background: #1e1e1e; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
-        </div>
+        <div id="content-2300033848" style=" transition: 0.2s;">
+          
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
           <textarea spellcheck="true" id="theory-2300033848" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterContribution()"></textarea>
@@ -1006,32 +992,14 @@
       <!-- Student Inti Hanitha Sai Gayathri -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-          <button onclick="editContrib('2300032512')" id="btn-edit-2300032512" style="padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
+          <button onclick="editContrib('2300032512')" id="btn-edit-2300032512" style="display: none; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
           <button onclick="saveContrib('2300032512')" id="btn-save-2300032512" style="display: none; padding: 4px 8px; font-size: 11px; background: var(--accent); border: none; color: white; border-radius: 4px; cursor: pointer;">Save</button>
         </div>
         <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Inti Hanitha Sai Gayathri</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300032512@kluniversity.in</div>
         
-        <div id="content-2300032512" style="pointer-events: none; opacity: 0.6; transition: 0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text2);">Code Work:</label>
-          <div style="display:flex; gap:8px;">
-            <select id="lang-2300032512" onchange="changeLanguage('2300032512')" style="background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-size:12px; outline:none;">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-            </select>
-            <button id="btn-run-2300032512" onclick="runCode('2300032512')" style="background:var(--accent); color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:12px; cursor:pointer; font-weight:bold;">▶ Run</button>
-          </div>
-        </div>
-        <div id="editor-container-2300032512" style="width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px;"></div>
-        <textarea spellcheck="true" id="code-2300032512" style="display:none;" disabled></textarea>
-        <div id="output-wrapper-2300032512" style="display:none; margin-bottom: 12px;">
-            <div style="font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: bold;">Execution Output:</div>
-            <pre id="output-2300032512" style="width: 100%; min-height: 40px; max-height: 150px; overflow-y: auto; background: #1e1e1e; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
-        </div>
+        <div id="content-2300032512" style=" transition: 0.2s;">
+          
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
           <textarea spellcheck="true" id="theory-2300032512" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterContribution()"></textarea>
@@ -1045,32 +1013,14 @@
       <!-- Student Kokkiligadda T.V. Durga Rao -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-          <button onclick="editContrib('2300032267')" id="btn-edit-2300032267" style="padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
+          <button onclick="editContrib('2300032267')" id="btn-edit-2300032267" style="display: none; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
           <button onclick="saveContrib('2300032267')" id="btn-save-2300032267" style="display: none; padding: 4px 8px; font-size: 11px; background: var(--accent); border: none; color: white; border-radius: 4px; cursor: pointer;">Save</button>
         </div>
         <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Kokkiligadda T.V. Durga Rao</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300032267@kluniversity.in</div>
         
-        <div id="content-2300032267" style="pointer-events: none; opacity: 0.6; transition: 0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text2);">Code Work:</label>
-          <div style="display:flex; gap:8px;">
-            <select id="lang-2300032267" onchange="changeLanguage('2300032267')" style="background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-size:12px; outline:none;">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-            </select>
-            <button id="btn-run-2300032267" onclick="runCode('2300032267')" style="background:var(--accent); color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:12px; cursor:pointer; font-weight:bold;">▶ Run</button>
-          </div>
-        </div>
-        <div id="editor-container-2300032267" style="width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px;"></div>
-        <textarea spellcheck="true" id="code-2300032267" style="display:none;" disabled></textarea>
-        <div id="output-wrapper-2300032267" style="display:none; margin-bottom: 12px;">
-            <div style="font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: bold;">Execution Output:</div>
-            <pre id="output-2300032267" style="width: 100%; min-height: 40px; max-height: 150px; overflow-y: auto; background: #1e1e1e; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
-        </div>
+        <div id="content-2300032267" style=" transition: 0.2s;">
+          
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
           <textarea spellcheck="true" id="theory-2300032267" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterContribution()"></textarea>
@@ -1084,55 +1034,14 @@
       <!-- Student Badam Sudheer Reddy -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-          <button onclick="editContrib('2300033278')" id="btn-edit-2300033278" style="padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
+          <button onclick="editContrib('2300033278')" id="btn-edit-2300033278" style="display: none; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
           <button onclick="saveContrib('2300033278')" id="btn-save-2300033278" style="display: none; padding: 4px 8px; font-size: 11px; background: var(--accent); border: none; color: white; border-radius: 4px; cursor: pointer;">Save</button>
         </div>
         <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Badam Sudheer Reddy</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300033278@kluniversity.in</div>
         
-        <div id="content-2300033278" style="pointer-events: none; opacity: 0.6; transition: 0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text2);">Code Work:</label>
-          <div style="display:flex; gap:8px;">
-            <select id="lang-2300033278" onchange="changeLanguage('2300033278')" style="background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-size:12px; outline:none;">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-            </select>
-            <button id="btn-run-2300033278" onclick="runCode('2300033278')" style="background:var(--accent); color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:12px; cursor:pointer; font-weight:bold;">▶ Run</button>
-          </div>
-        </div>
-        <div id="editor-container-2300033278" style="width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px;"></div>
-        <textarea spellcheck="true" id="code-2300033278" style="display:none;" disabled>def analyze_sentiment(text):
-    positive_words = [&#x27;good&#x27;, &#x27;great&#x27;, &#x27;awesome&#x27;, &#x27;excellent&#x27;, &#x27;safe&#x27;]
-    negative_words = [&#x27;bad&#x27;, &#x27;terrible&#x27;, &#x27;danger&#x27;, &#x27;unsafe&#x27;, &#x27;fear&#x27;]
-    
-    score = 0
-    words = text.lower().split()
-    
-    for word in words:
-        if word in positive_words:
-            score += 1
-        elif word in negative_words:
-            score -= 1
-            
-    if score &gt; 0:
-        return &#x27;POSITIVE 😊&#x27;
-    elif score &lt; 0:
-        return &#x27;NEGATIVE 🚨&#x27;
-    return &#x27;NEUTRAL 😐&#x27;
-
-# Testing our Women Safety Sentiment Model
-sample_tweet = &quot;The new safety features in the city are great and make me feel safe&quot;
-print(f&quot;Tweet: &#x27;{sample_tweet}&#x27;&quot;)
-print(f&quot;Sentiment: {analyze_sentiment(sample_tweet)}&quot;)
-</textarea>
-        <div id="output-wrapper-2300033278" style="display:none; margin-bottom: 12px;">
-            <div style="font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: bold;">Execution Output:</div>
-            <pre id="output-2300033278" style="width: 100%; min-height: 40px; max-height: 150px; overflow-y: auto; background: #1e1e1e; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
-        </div>
+        <div id="content-2300033278" style=" transition: 0.2s;">
+          
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
           <textarea spellcheck="true" id="theory-2300033278" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterContribution()"></textarea>
@@ -1146,32 +1055,14 @@ print(f&quot;Sentiment: {analyze_sentiment(sample_tweet)}&quot;)
       <!-- Student Garikapati Satya Karthika -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-          <button onclick="editContrib('2300030988')" id="btn-edit-2300030988" style="padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
+          <button onclick="editContrib('2300030988')" id="btn-edit-2300030988" style="display: none; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text1); border-radius: 4px; cursor: pointer;">Edit</button>
           <button onclick="saveContrib('2300030988')" id="btn-save-2300030988" style="display: none; padding: 4px 8px; font-size: 11px; background: var(--accent); border: none; color: white; border-radius: 4px; cursor: pointer;">Save</button>
         </div>
         <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Garikapati Satya Karthika</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300030988@kluniversity.in</div>
         
-        <div id="content-2300030988" style="pointer-events: none; opacity: 0.6; transition: 0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text2);">Code Work:</label>
-          <div style="display:flex; gap:8px;">
-            <select id="lang-2300030988" onchange="changeLanguage('2300030988')" style="background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-size:12px; outline:none;">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-            </select>
-            <button id="btn-run-2300030988" onclick="runCode('2300030988')" style="background:var(--accent); color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:12px; cursor:pointer; font-weight:bold;">▶ Run</button>
-          </div>
-        </div>
-        <div id="editor-container-2300030988" style="width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px;"></div>
-        <textarea spellcheck="true" id="code-2300030988" style="display:none;" disabled></textarea>
-        <div id="output-wrapper-2300030988" style="display:none; margin-bottom: 12px;">
-            <div style="font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: bold;">Execution Output:</div>
-            <pre id="output-2300030988" style="width: 100%; min-height: 40px; max-height: 150px; overflow-y: auto; background: #1e1e1e; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
-        </div>
+        <div id="content-2300030988" style=" transition: 0.2s;">
+          
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
           <textarea spellcheck="true" id="theory-2300030988" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterContribution()"></textarea>
@@ -1534,7 +1425,7 @@ print(f&quot;Sentiment: {analyze_sentiment(sample_tweet)}&quot;)
       return;
     }
 
-    const userName  = window._currentUserName  || document.getElementById("user-name").textContent || "Anonymous";
+    const userName  = window._currentUserName  || document.getElementById("user-name")?.textContent || "Anonymous";
     const userEmail = window._currentUserEmail || "";
 
     // Detect device / browser
@@ -2035,7 +1926,7 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       return;
     }
 
-    const userName  = window._currentUserName  || document.getElementById("user-name").textContent || "Anonymous";
+    const userName  = window._currentUserName  || document.getElementById("user-name")?.textContent || "Anonymous";
     const userEmail = window._currentUserEmail || "";
 
     // Detect device / browser

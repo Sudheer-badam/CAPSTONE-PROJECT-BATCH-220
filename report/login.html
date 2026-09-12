@@ -116,6 +116,10 @@
       margin: 0;
       padding: 0;
     }
+    
+    .grecaptcha-badge { 
+      visibility: hidden !important; 
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -397,11 +401,11 @@
     @media (max-width: 780px) {
       body {
         padding: 16px;
-        align-items: center;
+        align-items: flex-start;
       }
 
       .login-container {
-        flex-direction: column;
+        flex-direction: column-reverse;
         min-height: unset;
         border-radius: 20px;
         width: 100%;
