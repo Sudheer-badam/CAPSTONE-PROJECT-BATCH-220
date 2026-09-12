@@ -104,6 +104,7 @@
   });
 
   window.handleSignOut = function() {
+    sessionStorage.clear();
     signOut(auth).then(() => { window.location.href = "login.html"; });
   };
 </script>
