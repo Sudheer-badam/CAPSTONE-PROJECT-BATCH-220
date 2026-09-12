@@ -103,9 +103,10 @@
     }
   });
 
-  window.handleSignOut = function() {
+  window.handleSignOut = async function() {
     sessionStorage.clear();
-    signOut(auth).then(() => { window.location.href = "login.html"; });
+    try { await signOut(auth); } catch(e) { console.warn("SignOut error:", e); }
+    window.location.href = "login.html";
   };
 </script>
 
