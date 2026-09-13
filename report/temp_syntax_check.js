@@ -48,7 +48,7 @@
       console.warn("DEV BYPASS ACTIVE: Simulating logged-in user.");
       window._currentUserEmail = "dev@kluniversity.in";
       window._currentUserName  = "Local Developer";
-      document.getElementById("user-name").textContent = window._currentUserName;
+      if (document.getElementById("user-name")) document.getElementById("user-name").textContent = window._currentUserName;
       document.getElementById("user-initials").textContent = "D";
       document.getElementById("user-initials").style.display = "flex";
       document.getElementById("user-avatar").style.display = "none";
@@ -66,7 +66,7 @@
       // Populate user profile in header
       const name  = user.displayName || sessionStorage.getItem("capstone_user") || email.split("@")[0];
       const photo = user.photoURL;
-      document.getElementById("user-name").textContent = name;
+      if (document.getElementById("user-name")) document.getElementById("user-name").textContent = name;
       
       // Store user info globally for diary tracking
       window._currentUserEmail = user.email || user.providerData?.[0]?.email || email;
@@ -861,15 +861,21 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       console.error(err);
       alert("Error saving: " + err.message);
     }
-
+    
     if(window.setServerStatus) window.setServerStatus(0);
-      btn.innerHTML = originalText;
+    if(btn) btn.innerHTML = 'Save Contributions';
+}; // END OF saveContributions
+
+// THIS WAS THE REST OF saveWeek
+    if(window.setServerStatus) window.setServerStatus(0);
+      if(typeof btn !== 'undefined' && typeof originalText !== 'undefined') {
+          btn.innerHTML = originalText;
+      }
       btn.disabled = false;
       const status = document.getElementById(`status-week${week}`);
       status.style.opacity = '1';
       setTimeout(() => { status.style.opacity = '0'; }, 2000);
       return;
-    }
 
     const userName  = window._currentUserName  || document.getElementById("user-name").textContent || "Anonymous";
     const userEmail = window._currentUserEmail || "";
@@ -1534,13 +1540,13 @@ window.saveContrib = async function(id) {
     
     let rapidApiKey = localStorage.getItem('RAPIDAPI_KEY');
     if (!rapidApiKey) {
-        rapidApiKey = prompt("Because public execution servers were abused, you now need a free API key to compile code!
+        rapidApiKey = prompt(`Because public execution servers were abused, you now need a free API key to compile code!
 
 1. Go to: https://rapidapi.com/judge0-official/api/judge0-ce
 2. Create a free account & subscribe to the Basic Free Tier
 3. Copy your 'X-RapidAPI-Key' and paste it below:
 
-(This will be saved securely in your browser)");
+(This will be saved securely in your browser)`);
         if (!rapidApiKey) return;
         localStorage.setItem('RAPIDAPI_KEY', rapidApiKey);
     }

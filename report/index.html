@@ -60,7 +60,7 @@
       console.warn("DEV BYPASS ACTIVE: Simulating logged-in user.");
       window._currentUserEmail = "dev@kluniversity.in";
       window._currentUserName  = "Local Developer";
-      document.getElementById("user-name")?.textContent = window._currentUserName;
+      if (document.getElementById("user-name")) document.getElementById("user-name").textContent = window._currentUserName;
       document.getElementById("user-initials").textContent = "D";
       document.getElementById("user-initials").style.display = "flex";
       document.getElementById("user-avatar").style.display = "none";
@@ -78,7 +78,7 @@
       // Populate user profile in header
       const name  = user.displayName || sessionStorage.getItem("capstone_user") || email.split("@")[0];
       const photo = user.photoURL;
-      document.getElementById("user-name")?.textContent = name;
+      if (document.getElementById("user-name")) document.getElementById("user-name").textContent = name;
       
       // Store user info globally for diary tracking
       window._currentUserEmail = user.email || user.providerData?.[0]?.email || email;
@@ -146,7 +146,7 @@
     display: flex; align-items: center; gap: 12px;
   }
   .header-left img.h-logo-kl {
-    width: 90px; height: 36px; border-radius: 16px; object-fit: contain; background: white;
+    width: 90px; height: 36px; border-radius: 16px; object-fit: contain;
   }
   .header-left img.h-logo-capstone {
     width: 36px; height: 36px; border-radius: 8px; object-fit: contain;
@@ -374,7 +374,7 @@
 
   @media (max-width: 680px) {
     header { height: auto; min-height: 64px; padding: 10px 16px; }
-    .header-left .h-logo-kl { display: none; }
+    /* .header-left .h-logo-kl { display: none; } */
     .header-left .h-subtitle { display: none; }
     #server-status-text { display: none; }
     #user-name { display: none; }
@@ -1918,15 +1918,10 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       console.error(err);
       alert("Error saving: " + err.message);
     }
-
+    
     if(window.setServerStatus) window.setServerStatus(0);
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-      const status = document.getElementById(`status-week${week}`);
-      status.style.opacity = '1';
-      setTimeout(() => { status.style.opacity = '0'; }, 2000);
-      return;
-    }
+    if(btn) btn.innerHTML = 'Save Contributions';
+}; // END OF saveContributions
 
     const userName  = window._currentUserName  || document.getElementById("user-name")?.textContent || "Anonymous";
     const userEmail = window._currentUserEmail || "";
@@ -1940,55 +1935,6 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
                    : /Linux/.test(ua) ? "Linux" : "Unknown Device";
     const browser  = /Edg\//.test(ua) ? "Edge" : /Chrome/.test(ua) ? "Chrome" : /Firefox/.test(ua) ? "Firefox" : /Safari/.test(ua) ? "Safari" : "Browser";
     deviceInfo = `${deviceInfo} - ${browser}`;
-
-    // Fetch IP + geolocation address (stored in Firebase only)
-    let userIp = "Unavailable", userAddress = "Unavailable";
-    try {
-      const geoRes  = await fetch("https://ipapi.co/json/");
-      const geoData = await geoRes.json();
-      userIp      = geoData.ip || "Unavailable";
-      userAddress = [geoData.city, geoData.region, geoData.postal, geoData.country_name].filter(Boolean).join(', ');
-    } catch(e) {}
-
-    // Edit count for this user on this week
-    const prevHistory = window.cloudDataStore[week]?._historyCount || {};
-    const userEditCount = (prevHistory[userEmail] || 0) + 1;
-
-    try {
-      // 1. Save flat diary fields to the week document
-      const weekDocRef = window._doc(window._db, "diaries", `week_${week}`);
-      await window._setDoc(weekDocRef, newData, { merge: true });
-
-      // 2. Add a clean history entry as its own document in the subcollection
-      const historyColRef = window._collection(window._db, "diaries", `week_${week}`, "history");
-      await window._addDoc(historyColRef, {
-        name:          userName,
-        email:         userEmail,
-        device:        deviceInfo,
-        ip_address:    userIp,
-        address:       userAddress,
-        edit_number:   userEditCount,
-        saved_at:      new Date().toLocaleString(),
-        savedAt:       Date.now(),    // numeric for ordering
-        changed_fields: changedLabels.join(', ')
-      });
-
-      if(window.setServerStatus) window.setServerStatus(0);
-      // Update local cache
-      window.cloudDataStore[week] = newData;
-
-      const status = document.getElementById(`status-week${week}`);
-      status.style.opacity = '1';
-      setTimeout(() => { status.style.opacity = '0'; }, 2000);
-    } catch (err) {
-      if(window.setServerStatus) window.setServerStatus(2);
-      alert("Failed to save. See console for details.");
-      console.error(err);
-    }
-
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  };
 
 
   window.saveAllDiaries = async function() {
@@ -2604,13 +2550,13 @@ window.saveContrib = async function(id) {
     
     let rapidApiKey = localStorage.getItem('RAPIDAPI_KEY');
     if (!rapidApiKey) {
-        rapidApiKey = prompt("Because public execution servers were abused, you now need a free API key to compile code!
+        rapidApiKey = prompt(`Because public execution servers were abused, you now need a free API key to compile code!
 
 1. Go to: https://rapidapi.com/judge0-official/api/judge0-ce
 2. Create a free account & subscribe to the Basic Free Tier
 3. Copy your 'X-RapidAPI-Key' and paste it below:
 
-(This will be saved securely in your browser)");
+(This will be saved securely in your browser)`);
         if (!rapidApiKey) return;
         localStorage.setItem('RAPIDAPI_KEY', rapidApiKey);
     }
@@ -2656,8 +2602,7 @@ window.saveContrib = async function(id) {
         outputBox.innerText = result.stderr;
         outputBox.style.color = '#ff6b6b';
       } else if (result.compile_output) {
-        outputBox.innerText = "COMPILER ERROR:
-" + result.compile_output;
+        outputBox.innerText = "COMPILER ERROR:\n" + result.compile_output;
         outputBox.style.color = '#ff6b6b';
       } else {
         outputBox.innerText = result.message || result.error || "Unknown execution error.";

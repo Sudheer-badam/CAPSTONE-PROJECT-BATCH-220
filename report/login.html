@@ -224,11 +224,9 @@
     }
 
     .brand .kl-logo {
-      width: 240px;
+      width: 140px;
       height: auto;
-      object-fit: contain;
-      border-radius: 12px;
-      flex-shrink: 0;
+      border-radius: 8px;
     }
 
     .welcome h1 {
@@ -428,6 +426,10 @@
         animation: none;
         box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
       }
+      
+      .mobile-kl-logo {
+        display: block !important;
+      }
 
       .image-panel .panel-title {
         font-size: 15px;
@@ -575,7 +577,10 @@
 
   <!-- RIGHT — Capstone Logo Panel -->
   <div class="image-panel">
-    <img class="logo-big" src="capstone_logo.jpeg" alt="Capstone Project 220 Logo" />
+    <div style="display: flex; gap: 16px; align-items: center; justify-content: center;">
+      <img class="logo-big mobile-kl-logo" src="kl_logo.png" alt="KL University Logo" style="display: none; object-fit: contain; border-radius: 16px; border: none; box-shadow: none; width: 160px; height: auto;" />
+      <img class="logo-big" src="capstone_logo.jpeg" alt="Capstone Project 220 Logo" style="border-radius: 16px;" />
+    </div>
     <div class="panel-title">AI-Based Social Media Sentiment &amp; Trend Analysis Platform</div>
     <div class="panel-subtitle">On Women Safety · Batch 220 · KL University</div>
   </div>
