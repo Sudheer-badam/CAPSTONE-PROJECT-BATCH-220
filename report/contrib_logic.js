@@ -40,7 +40,7 @@
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      if (userEmail === student.email || userEmail === "msubbarao@kluniversity.in") {
+      if (userEmail === student.email) {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
       } else {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
