@@ -2816,6 +2816,28 @@ window.saveContrib = async function(id) {
   });
 </script>
 
+<!-- Global Tab Navigation Arrows -->
+<div id="global-tab-nav" style="position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; gap: 12px;">
+  <button onclick="switchTabByIndex(-1)" style="background: var(--card); border: 1px solid var(--border); color: var(--text1); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 20px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='var(--accent)'; this.style.color='white';" onmouseout="this.style.background='var(--card)'; this.style.color='var(--text1)';">&larr;</button>
+  <button onclick="switchTabByIndex(1)" style="background: var(--card); border: 1px solid var(--border); color: var(--text1); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 20px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='var(--accent)'; this.style.color='white';" onmouseout="this.style.background='var(--card)'; this.style.color='var(--text1)';">&rarr;</button>
+</div>
+
+<script>
+  function switchTabByIndex(direction) {
+    const tabIds = ['tab-report', 'tab-ppt', 'tab-papers', 'tab-diary', 'tab-contributions', 'tab-team'];
+    const currentIdx = tabIds.findIndex(id => document.getElementById(id) && document.getElementById(id).classList.contains('active'));
+    if (currentIdx === -1) return;
+    const newIdx = currentIdx + direction;
+    if (newIdx >= 0 && newIdx < tabIds.length) {
+      const btns = document.querySelectorAll('.tabs .tab-btn');
+      if (btns[newIdx]) {
+        btns[newIdx].click();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }
+</script>
+
 </body>
 
 </html>
