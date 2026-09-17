@@ -778,9 +778,9 @@
           
           <div id="dynamic-slides-wrapper" style="width: 100%;"></div>
 
-          <!-- Navigation Buttons -->
-          <a style="cursor: pointer; position: absolute; top: 50%; left: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 20px; transition: 0.3s; border-radius: 50%; width: 44px; height: 44px; user-select: none; background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);" onclick="plusSlides(-1)" onmouseover="this.style.backgroundColor='var(--accent)'" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.6)'">&#10094;</a>
-          <a style="cursor: pointer; position: absolute; top: 50%; right: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 20px; transition: 0.3s; border-radius: 50%; width: 44px; height: 44px; user-select: none; background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);" onclick="plusSlides(1)" onmouseover="this.style.backgroundColor='var(--accent)'" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.6)'">&#10095;</a>
+          <!-- Invisible Click Navigation Zones -->
+          <div style="position: absolute; top: 0; left: 0; width: 30%; height: 100%; cursor: pointer; z-index: 10;" onclick="plusSlides(-1)" title="Click to go Previous"></div>
+          <div style="position: absolute; top: 0; right: 0; width: 30%; height: 100%; cursor: pointer; z-index: 10;" onclick="plusSlides(1)" title="Click to go Next"></div>
           
           <!-- Slide Counter -->
           <div id="slide-counter" style="position: absolute; bottom: 16px; right: 16px; color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; background: rgba(0,0,0,0.7); border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">
