@@ -117,9 +117,23 @@
       padding: 0;
     }
     
+    :root {
+      --bg: #FFFFFF;
+      --card: #FFFFFF;
+      --text1: #0F172A;
+      --text2: #334155;
+    }
+
     .grecaptcha-badge { 
       visibility: hidden !important; 
     }
+
+    /* Modern Scrollbar - Remove arrows */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar-button { display: none; }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -128,7 +142,9 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: #0D0D0D;
+      background: var(--bg);
+      background-attachment: fixed;
+      background-size: cover;
       position: relative;
       overflow-y: auto;
       overflow-x: hidden;
@@ -166,7 +182,7 @@
       font-size: 25px;
       font-family: "Times New Roman", Times, serif;
       font-weight: 800;
-      color: white;
+      color: var(--text1);
       white-space: nowrap;
       user-select: none;
     }
@@ -179,7 +195,9 @@
       width: 100%;
       max-width: 1000px;
       min-height: min(620px, 95vh);
-      background: #FFFFFF;
+      background: var(--card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border-radius: 28px;
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -232,14 +250,14 @@
     .welcome h1 {
       font-size: 26px;
       font-weight: 800;
-      color: #0F172A;
+      color: var(--text1);
       letter-spacing: -0.02em;
       margin-bottom: 8px;
     }
 
     .welcome p {
       font-size: 13px;
-      color: #334155;
+      color: var(--text2);
       line-height: 1.5;
       margin-bottom: 24px;
       font-weight: 500;
@@ -472,6 +490,31 @@
       }
     }
   </style>
+  <script>
+    const THEMES = {
+      default: { bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', surface: 'rgba(255,255,255,0.8)', card: 'rgba(255,255,255,0.5)', text1: '#0F172A', text2: '#334155', border: 'rgba(255,255,255,0.5)' },
+      dark:    { bg: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)', surface: 'rgba(0,0,0,0.5)', card: 'rgba(0,0,0,0.3)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.7)', border: 'rgba(255,255,255,0.1)' },
+      red:     { bg: 'linear-gradient(135deg, #ff416c, #ff4b2b)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
+      green:   { bg: 'linear-gradient(135deg, #11998e, #38ef7d)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
+      blue:    { bg: 'linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
+      purple:  { bg: 'linear-gradient(135deg, #8E2DE2, #4A00E0)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' }
+    };
+
+    function applyTheme(themeName) {
+      const theme = THEMES[themeName] || THEMES.default;
+      document.documentElement.style.setProperty('--bg', theme.bg);
+      document.documentElement.style.setProperty('--surface', theme.surface);
+      document.documentElement.style.setProperty('--card', theme.card);
+      document.documentElement.style.setProperty('--text1', theme.text1);
+      document.documentElement.style.setProperty('--text2', theme.text2);
+      document.documentElement.style.setProperty('--border', theme.border);
+      localStorage.setItem('project_theme', themeName);
+    }
+
+    // Apply on load
+    const savedTheme = localStorage.getItem('project_theme') || 'default';
+    applyTheme(savedTheme);
+  </script>
 </head>
 
 <body>

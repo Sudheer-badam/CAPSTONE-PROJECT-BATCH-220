@@ -2641,7 +2641,10 @@ window.saveContrib = async function(id) {
           minimap: { enabled: false },
           fontSize: 13,
           scrollBeyondLastLine: false,
-          readOnly: true
+          readOnly: true,
+          folding: false,
+          breadcrumbs: { enabled: false },
+          scrollbar: { verticalHasArrows: false, horizontalHasArrows: false }
         });
         
         window.editors[sid] = editor;
