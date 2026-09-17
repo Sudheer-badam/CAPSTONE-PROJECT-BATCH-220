@@ -569,6 +569,15 @@
         }
       };
     </script>
+    <style>
+      @keyframes spinRightMedium {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      #theme-settings-btn svg {
+        animation: spinRightMedium 4s linear infinite;
+      }
+    </style>
     <div style="position: relative;">
       <div id="theme-settings-btn" style="cursor: pointer; background: var(--card); padding: 8px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text1)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -664,6 +673,7 @@
 
   <!-- --- TAB: REPORT --- -->
   <div id="tab-report" class="tab-panel active">
+    <div style="font-size: 13px; font-weight: 700; color: #10B981; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;">Women-Made Document (Not AI-Made)</div>
     <div class="section-title">Project Report Overview</div>
     <div class="section-sub">Key highlights from our capstone project -- AI-Based Social Media Sentiment &amp; Trend Analysis Platform on Women Safety</div>
 
@@ -712,18 +722,7 @@
       </div>
     </div>
 
-    <!-- Demo PDF download -->
-    <div class="section-title">Project Demo Document</div>
-    <div class="section-sub" style="margin-bottom:16px">Download the project overview PDF</div>
-    <a class="pdf-card" href="capstone project demo pdf.pdf" target="_blank" download style="max-width:400px; display:flex;">
-      <div class="pdf-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      </div>
-      <div>
-        <div class="pdf-name">Capstone Project Demo PDF</div>
-        <div class="pdf-size">148 KB - Click to download</div>
-      </div>
-    </a>
+
   </div>
 
   <!-- --- TAB: PPT --- -->
@@ -801,8 +800,8 @@
           let i;
           let slides = document.getElementsByClassName("mySlides");
           if (!slides || slides.length === 0) return;
-          if (n > slides.length) {slideIndex = 1}
-          if (n < 1) {slideIndex = slides.length}
+          if (n > slides.length) {slideIndex = slides.length}
+          if (n < 1) {slideIndex = 1}
           for (i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
           }
