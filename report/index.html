@@ -449,6 +449,7 @@
     }
     .header-left .h-logo-kl { display: none; }
     .header-left .h-subtitle { display: none; }
+    .h-mobile-time { display: block !important; }
     .h-title { 
       font-size: 15px; 
       white-space: nowrap; 
@@ -533,6 +534,7 @@
     <div>
       <div class="h-title">Capstone Project 220</div>
       <div class="h-subtitle">AI Sentiment - Women Safety - KL University</div>
+      <div id="mobile-live-time" class="h-mobile-time" style="display: none; font-size: 11px; font-weight: 600; color: var(--text2); margin-top: 2px;">Loading IST...</div>
     </div>
   </div>
   <div class="header-right">
@@ -1826,7 +1828,8 @@
   // LIVE CLOCK (IST)
   setInterval(() => {
     const timeEl = document.getElementById('time-text');
-    if (timeEl) {
+    const mobileTimeEl = document.getElementById('mobile-live-time');
+    if (timeEl || mobileTimeEl) {
       const d = new Date();
       const options = { 
         timeZone: "Asia/Kolkata", 
@@ -1834,7 +1837,9 @@
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
       };
       const formatter = new Intl.DateTimeFormat('en-IN', options);
-      timeEl.innerText = formatter.format(d) + " IST";
+      const timeStr = formatter.format(d) + " IST";
+      if (timeEl) timeEl.innerText = timeStr;
+      if (mobileTimeEl) mobileTimeEl.innerText = timeStr;
     }
   }, 1000);
 </script>
@@ -2273,7 +2278,8 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
   // LIVE CLOCK (IST)
   setInterval(() => {
     const timeEl = document.getElementById('time-text');
-    if (timeEl) {
+    const mobileTimeEl = document.getElementById('mobile-live-time');
+    if (timeEl || mobileTimeEl) {
       const d = new Date();
       const options = { 
         timeZone: "Asia/Kolkata", 
@@ -2281,7 +2287,9 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
       };
       const formatter = new Intl.DateTimeFormat('en-IN', options);
-      timeEl.innerText = formatter.format(d) + " IST";
+      const timeStr = formatter.format(d) + " IST";
+      if (timeEl) timeEl.innerText = timeStr;
+      if (mobileTimeEl) mobileTimeEl.innerText = timeStr;
     }
   }, 1000);
 </script>
