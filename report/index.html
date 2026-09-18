@@ -14,7 +14,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, onSnapshot, addDoc, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, getDocs, onSnapshot, addDoc, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
@@ -27,15 +27,16 @@
     measurementId:     "G-XV9HTK9TMM"
   };
 
-  const app  = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db   = getFirestore(app);
+  const db = getFirestore(app);
 
   // Expose Firestore helpers to global scope so non-module scripts can use them
   window._db           = db;
   window._doc          = doc;
   window._setDoc       = setDoc;
   window._getDoc       = getDoc;
+  window._getDocs      = getDocs;
   window._onSnapshot   = onSnapshot;
   window._addDoc       = addDoc;
   window._collection   = collection;
@@ -1286,6 +1287,19 @@
       <ul id="contrib-history" style="list-style-type: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto;">
         <li>Loading...</li>
       </ul>
+    </div>
+
+    <!-- Global Archive Box -->
+    <div class="master-summary-box" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <div class="master-summary-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Global Archive (All Dates)</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This section pulls all historical records from every single day. To save on database bandwidth, it doesn't load automatically.</p>
+      
+      <button onclick="loadGlobalArchive()" id="btn-load-archive" style="padding: 10px 20px; background: var(--surface); color: var(--text1); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-bottom: 16px; width: 100%;">Load Full History</button>
+      
+      <div id="global-archive-container" style="display: flex; flex-direction: column; gap: 24px; display: none;"></div>
     </div>
 
   </div>
@@ -2802,6 +2816,56 @@ window.saveContrib = async function(id) {
     });
 
     liveBox.value = compiledText;
+  };
+
+  window.loadGlobalArchive = async function() {
+    const btn = document.getElementById("btn-load-archive");
+    const container = document.getElementById("global-archive-container");
+    if(!btn || !container) return;
+    
+    btn.innerHTML = '⏳ Loading All History...';
+    btn.disabled = true;
+    
+    try {
+      const q = window._query(window._collection(window._db, "team_progress"));
+      const snapshot = await window._getDocs(q);
+      
+      container.innerHTML = '';
+      let docsData = [];
+      
+      snapshot.forEach((doc) => {
+        // doc.id is the date (e.g., 2026-09-18)
+        const data = doc.data();
+        if(data.master_summary_by_name) {
+          docsData.push({ date: doc.id, text: data.master_summary_by_name });
+        } else if (data.master_summary) {
+          docsData.push({ date: doc.id, text: data.master_summary });
+        }
+      });
+      
+      // Sort descending by date
+      docsData.sort((a, b) => b.date.localeCompare(a.date));
+      
+      if(docsData.length === 0) {
+        container.innerHTML = '<div style="padding: 16px; text-align: center;">No history found.</div>';
+      } else {
+        docsData.forEach((item) => {
+          const block = document.createElement('div');
+          block.innerHTML = `
+            <div style="font-weight: 700; color: var(--accent); margin-bottom: 8px;">Date: ${item.date}</div>
+            <textarea spellcheck="false" readonly style="width: 100%; height: 150px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;">${item.text}</textarea>
+          `;
+          container.appendChild(block);
+        });
+      }
+      
+      container.style.display = 'flex';
+      btn.innerHTML = '✅ Loaded successfully';
+    } catch(e) {
+      console.error(e);
+      btn.innerHTML = '❌ Error loading';
+      btn.disabled = false;
+    }
   };
 
   window.changeLanguage = function(sid) {
