@@ -2332,21 +2332,6 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
   
 <script>
 
-  // ── TEAM CONTRIBUTIONS LOGIC ──
-  const STUDENTS = [
-    { id: "2300033848", name: "Mitta Kavya Nayana", email: "2300033848@kluniversity.in" },
-    { id: "2300032512", name: "Inti Hanitha Sai Gayathri", email: "2300032512@kluniversity.in" },
-    { id: "2300032267", name: "Kokkiligadda T.V. Durga Rao", email: "2300032267@kluniversity.in" },
-    { id: "2300033278", name: "Badam Sudheer Reddy", email: "2300033278@kluniversity.in" },
-    { id: "2300030988", name: "Garikapati Satya Karthika", email: "2300030988@kluniversity.in" }
-  ];
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const datePicker = document.getElementById('contrib-date-picker');
-    if (datePicker && !datePicker.value) {
-      datePicker.value = new Date().toISOString().split('T')[0]; // Set today
-    }
-  });
 
   window.previewImage = function(id, input) {
     if (input.files && input.files[0]) {
@@ -2360,7 +2345,7 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
     }
   };
 
-  let unsubscribeContributions = null;
+
 
   
 // Helper to compress images before upload
