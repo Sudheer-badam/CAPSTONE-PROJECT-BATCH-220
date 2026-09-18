@@ -1252,7 +1252,7 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Compiled Output)</div>
       </div>
-      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates chronologically to keep a permanent history of what was saved over time.</p>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates chronologically <b>under each person's name</b> to keep a permanent history of what was saved over time.</p>
       <textarea spellcheck="true" id="contrib-master" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
@@ -2423,28 +2423,17 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
     
     // Append any text that hasn't been appended yet to the master log
     if (masterBox) {
-        let hasNewLog = false;
-        let tempLog = "";
-        
         for (let student of STUDENTS) {
             const codeBox = document.getElementById(`code-${student.id}`);
             const theoryBox = document.getElementById(`theory-${student.id}`);
             let logEntry = "";
             if (codeBox && codeBox.value.trim()) logEntry += `[Code Work]: ${codeBox.value.trim()}\n`;
-            if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}\n`;
+            if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}`;
             
-            if (logEntry && !masterBox.value.includes(logEntry.trim())) {
+            if (logEntry) {
                 const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                tempLog += `\n[${nowTime}] 👤 ${student.name}:\n${logEntry}`;
-                hasNewLog = true;
+                window.appendToMasterSummaryByName(student.id, student.name, `[${nowTime}] ${logEntry}`);
             }
-        }
-        
-        if (hasNewLog) {
-            if (!masterBox.value.includes("DAILY UPDATE")) {
-                masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
-            }
-            masterBox.value += tempLog;
         }
         payload.master_summary = masterBox.value;
     }
@@ -2586,6 +2575,39 @@ window.editContrib = function(id) {
   if (saveBtn) saveBtn.style.display = 'inline-block';
 };
 
+window.appendToMasterSummaryByName = function(studentId, studentName, logText) {
+    if (!logText) return;
+    const masterBox = document.getElementById("contrib-master");
+    if (!masterBox) return;
+    
+    const datePicker = document.getElementById('contrib-date-picker');
+    const selectedDate = datePicker ? datePicker.value : new Date().toISOString().split('T')[0];
+    
+    let currentText = masterBox.value || "";
+    if (!currentText.includes("DAILY UPDATE")) {
+        currentText = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n\n`;
+    }
+    
+    const sectionHeader = `👤 ${studentName} (${studentId}):\n`;
+    let sectionIndex = currentText.indexOf(sectionHeader);
+    
+    if (sectionIndex === -1) {
+        // Add new section
+        currentText += `${sectionHeader}${logText}\n\n`;
+    } else {
+        // Find end of current section
+        let searchStartIndex = sectionIndex + sectionHeader.length;
+        let nextSectionIndex = currentText.indexOf("\n👤 ", searchStartIndex);
+        if (nextSectionIndex === -1) nextSectionIndex = currentText.length;
+        
+        // Only insert if it doesn't already contain this exact log string
+        const studentSection = currentText.substring(sectionIndex, nextSectionIndex);
+        if (!studentSection.includes(logText.trim())) {
+            currentText = currentText.substring(0, nextSectionIndex).replace(/\n+$/, '') + "\n" + logText + "\n\n" + currentText.substring(nextSectionIndex).replace(/^\n+/, '');
+        }
+    }
+    masterBox.value = currentText;
+};
 window.saveContrib = async function(id) {
   const contentDiv = document.getElementById('content-' + id);
   if (!contentDiv) return;
@@ -2627,13 +2649,10 @@ window.saveContrib = async function(id) {
       const studentName = window._currentUserName || "Student";
       let logEntry = "";
       if (codeBox && codeBox.value.trim()) logEntry += `[Code Work]: ${codeBox.value.trim()}\n`;
-      if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}\n`;
+      if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}`;
       
-      if (logEntry && !masterBox.value.includes(logEntry.trim())) {
-          if (!masterBox.value.includes("DAILY UPDATE")) {
-              masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
-          }
-          masterBox.value += `\n[${nowTime}] 👤 ${studentName}:\n${logEntry}`;
+      if (logEntry) {
+          window.appendToMasterSummaryByName(id, studentName, `[${nowTime}] ${logEntry}`);
       }
       payload.master_summary = masterBox.value;
   }
