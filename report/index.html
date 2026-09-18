@@ -1110,7 +1110,7 @@
   <div id="tab-diary" class="tab-panel">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
       <div>
-        <div class="section-title">Weekly Diary Reports</div>
+        <div class="section-title">📅 Weekly Diary Reports</div>
         <div class="section-sub" style="margin-bottom: 0;">Edit and save your weekly progress reports. Data is saved locally in your browser.</div>
       </div>
       <button id="btn-save-all-diaries" onclick="saveAllDiaries()" style="padding: 10px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;">Save All Weeks</button>
@@ -2034,10 +2034,10 @@
             }
           });
           const masterBox = document.getElementById("contrib-master");
-          if (masterBox) masterBox.value = data.master_summary || "";
+          if (masterBox) masterBox.value = data.master_summary || "NO UPDATES ON THAT DAY FOR ALL TEAM MATES";
           
           const masterByNameBox = document.getElementById("contrib-master-by-name");
-          if (masterByNameBox) masterByNameBox.value = data.master_summary_by_name || "";
+          if (masterByNameBox) masterByNameBox.value = data.master_summary_by_name || "NO UPDATES ON THAT DAY FOR ALL TEAM MATES";
           
           if (window.updateMasterLiveContribution) window.updateMasterLiveContribution();
         }
@@ -2810,7 +2810,7 @@ window.saveContrib = async function(id) {
         if (code) compiledText += `[Code Work]: ${code}\n`;
         if (theory) compiledText += `[Theory Work]: ${theory}\n`;
       } else {
-        compiledText += "No updates provided yet.\n";
+        compiledText += "NO UPDATES ON THAT DAY FOR ALL TEAM MATES\n";
       }
       compiledText += "\n";
     });
