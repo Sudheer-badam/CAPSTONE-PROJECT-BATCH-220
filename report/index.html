@@ -2554,18 +2554,28 @@ window.editContrib = function(id) {
   contentDiv.style.pointerEvents = 'auto';
   contentDiv.style.opacity = '1';
   
-  document.getElementById(`code-${id}`).disabled = false;
-  document.getElementById(`theory-${id}`).disabled = false;
-  document.getElementById(`file-${id}`).disabled = false;
-  if(document.getElementById(`caption-${id}`)) document.getElementById(`caption-${id}`).disabled = false;
+  const codeBox = document.getElementById(`code-${id}`);
+  if (codeBox) codeBox.disabled = false;
+  
+  const theoryBox = document.getElementById(`theory-${id}`);
+  if (theoryBox) theoryBox.disabled = false;
+  
+  const fileBox = document.getElementById(`file-${id}`);
+  if (fileBox) fileBox.disabled = false;
+  
+  const captionBox = document.getElementById(`caption-${id}`);
+  if (captionBox) captionBox.disabled = false;
   
   if (window.editors && window.editors[id]) {
       window.editors[id].updateOptions({ readOnly: false });
       setTimeout(() => window.editors[id].layout(), 10);
   }
   
-  document.getElementById('btn-edit-' + id).style.display = 'none';
-  document.getElementById('btn-save-' + id).style.display = 'inline-block';
+  const editBtn = document.getElementById('btn-edit-' + id);
+  if (editBtn) editBtn.style.display = 'none';
+  
+  const saveBtn = document.getElementById('btn-save-' + id);
+  if (saveBtn) saveBtn.style.display = 'inline-block';
 };
 
 window.saveContrib = async function(id) {
@@ -2575,9 +2585,15 @@ window.saveContrib = async function(id) {
   if (window.editors && window.editors[id]) { window.editors[id].updateOptions({ readOnly: true }); }
   contentDiv.style.opacity = '0.6';
   
-  document.getElementById(`code-${id}`).disabled = true;
-  document.getElementById(`theory-${id}`).disabled = true;
-  document.getElementById(`file-${id}`).disabled = true;
+  const codeBox = document.getElementById(`code-${id}`);
+  if (codeBox) codeBox.disabled = true;
+  
+  const theoryBox = document.getElementById(`theory-${id}`);
+  if (theoryBox) theoryBox.disabled = true;
+  
+  const fileBox = document.getElementById(`file-${id}`);
+  if (fileBox) fileBox.disabled = true;
+
   
   const saveBtn = document.getElementById('btn-save-' + id);
   const editBtn = document.getElementById('btn-edit-' + id);
