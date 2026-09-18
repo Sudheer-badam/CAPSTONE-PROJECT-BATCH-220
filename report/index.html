@@ -508,12 +508,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
   <script>
     const THEMES = {
-      default: { bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', surface: 'rgba(255,255,255,0.8)', card: 'rgba(255,255,255,0.5)', text1: '#0F172A', text2: '#334155', border: 'rgba(255,255,255,0.5)' },
-      dark:    { bg: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)', surface: 'rgba(0,0,0,0.5)', card: 'rgba(0,0,0,0.3)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.7)', border: 'rgba(255,255,255,0.1)' },
-      red:     { bg: 'linear-gradient(135deg, #ff416c, #ff4b2b)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
-      green:   { bg: 'linear-gradient(135deg, #11998e, #38ef7d)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
-      blue:    { bg: 'linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' },
-      purple:  { bg: 'linear-gradient(135deg, #8E2DE2, #4A00E0)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)' }
+      default: { bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', surface: 'rgba(255,255,255,0.8)', card: 'rgba(255,255,255,0.5)', text1: '#0F172A', text2: '#334155', border: 'rgba(255,255,255,0.5)', colorScheme: 'light' },
+      dark:    { bg: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)', surface: 'rgba(0,0,0,0.5)', card: 'rgba(0,0,0,0.3)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.7)', border: 'rgba(255,255,255,0.1)', colorScheme: 'dark' },
+      red:     { bg: 'linear-gradient(135deg, #ff416c, #ff4b2b)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)', colorScheme: 'dark' },
+      green:   { bg: 'linear-gradient(135deg, #11998e, #38ef7d)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)', colorScheme: 'dark' },
+      blue:    { bg: 'linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)', colorScheme: 'dark' },
+      purple:  { bg: 'linear-gradient(135deg, #8E2DE2, #4A00E0)', surface: 'rgba(0,0,0,0.4)', card: 'rgba(0,0,0,0.25)', text1: '#FFFFFF', text2: 'rgba(255,255,255,0.8)', border: 'rgba(255,255,255,0.2)', colorScheme: 'dark' }
     };
 
     function applyTheme(themeName) {
@@ -524,6 +524,7 @@
       document.documentElement.style.setProperty('--text1', theme.text1);
       document.documentElement.style.setProperty('--text2', theme.text2);
       document.documentElement.style.setProperty('--border', theme.border);
+      document.documentElement.style.colorScheme = theme.colorScheme;
       localStorage.setItem('project_theme', themeName);
     }
 
