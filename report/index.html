@@ -1252,8 +1252,8 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Compiled Output)</div>
       </div>
-      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">You can type your team's compiled report history here manually. It will save securely to Firebase along with the rest of your contributions.</p>
-      <textarea spellcheck="true" id="contrib-master" style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates chronologically to keep a permanent history of what was saved over time.</p>
+      <textarea spellcheck="true" id="contrib-master" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
     <!-- Team Contributions Edit History Log -->
@@ -1996,9 +1996,7 @@
             }
           });
           const masterBox = document.getElementById("contrib-master");
-          if (masterBox && document.activeElement !== masterBox) {
-              masterBox.value = data.master_summary || "";
-          }
+          if (masterBox) masterBox.value = data.master_summary || "";
         }
       });
       // Listen to history subcollection for this date
@@ -2410,7 +2408,34 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
 
     const payload = {};
     const masterBox = document.getElementById("contrib-master");
-    if (masterBox) payload.master_summary = masterBox.value;
+    
+    // Append any text that hasn't been appended yet to the master log
+    if (masterBox) {
+        let hasNewLog = false;
+        let tempLog = "";
+        
+        for (let student of STUDENTS) {
+            const codeBox = document.getElementById(`code-${student.id}`);
+            const theoryBox = document.getElementById(`theory-${student.id}`);
+            let logEntry = "";
+            if (codeBox && codeBox.value.trim()) logEntry += `[Code Work]: ${codeBox.value.trim()}\n`;
+            if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}\n`;
+            
+            if (logEntry && !masterBox.value.includes(logEntry.trim())) {
+                const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                tempLog += `\n[${nowTime}] 👤 ${student.name}:\n${logEntry}`;
+                hasNewLog = true;
+            }
+        }
+        
+        if (hasNewLog) {
+            if (!masterBox.value.includes("DAILY UPDATE")) {
+                masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
+            }
+            masterBox.value += tempLog;
+        }
+        payload.master_summary = masterBox.value;
+    }
 
     btn.innerHTML = `⏳ Saving...`;
     
@@ -2428,10 +2453,11 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       let diagramUrl = urlBox ? urlBox.value : "";
       let captionText = captionBox ? captionBox.value : "";
       
-      if (codeBox) payload[`${student.id}.code_work`] = codeBox.value;
-      if (theoryBox) payload[`${student.id}.theory_work`] = theoryBox.value;
-      if (urlBox) payload[`${student.id}.diagram_url`] = urlBox.value;
-      if (captionBox) payload[`${student.id}.diagram_caption`] = captionBox.value;
+      payload[student.id] = {};
+      if (codeBox) payload[student.id].code_work = codeBox.value;
+      if (theoryBox) payload[student.id].theory_work = theoryBox.value;
+      if (urlBox) payload[student.id].diagram_url = urlBox.value;
+      if (captionBox) payload[student.id].diagram_caption = captionBox.value;
       
       if (fileInput && fileInput.files && fileInput.files[0] && window._storage) {
         const file = fileInput.files[0];
@@ -2469,7 +2495,7 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
                 if (globalBtn) globalBtn.innerHTML = `⏳ 3/3: Getting Image URL...`;
                 diagramUrl = await window._getDownloadURL(storageRef);
                 urlBox.value = diagramUrl;
-                payload[`${student.id}.diagram_url`] = diagramUrl;
+                payload[student.id].diagram_url = diagramUrl;
             } catch (e) {
                 console.error("Upload failed for " + student.name, e);
                 const globalBtn = document.getElementById("btn-save-contrib");
@@ -2482,28 +2508,7 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
     
     // OPTIMISTIC SAVE: Immediately save the text fields so the UI feels instant
     try {
-      if (window._updateDoc) {
-          try {
-              await window._updateDoc(window._doc(window._db, "team_progress", selectedDate), payload);
-          } catch(e) {
-              if (e.code === 'not-found' && window._setDoc) {
-                  // Fallback: convert dot notation payload to nested objects for setDoc
-                  const nested = {};
-                  for (let key in payload) {
-                      if (key === 'master_summary') {
-                          nested.master_summary = payload.master_summary;
-                      } else {
-                          const [sid, field] = key.split('.');
-                          if (!nested[sid]) nested[sid] = {};
-                          nested[sid][field] = payload[key];
-                      }
-                  }
-                  await window._setDoc(window._doc(window._db, "team_progress", selectedDate), nested, { merge: true });
-              } else {
-                  throw e;
-              }
-          }
-      }
+      await window._setDoc(window._doc(window._db, "team_progress", selectedDate), payload, { merge: true });
       
       // Save history entry
       const userName = window._currentUserName || "Unknown";
@@ -2605,7 +2610,21 @@ window.saveContrib = async function(id) {
   if (captionBox) payload[`${id}.diagram_caption`] = captionBox.value;
 
   const masterBox = document.getElementById("contrib-master");
-  if (masterBox) payload.master_summary = masterBox.value;
+  if (masterBox) {
+      const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const studentName = window._currentUserName || "Student";
+      let logEntry = "";
+      if (codeBox && codeBox.value.trim()) logEntry += `[Code Work]: ${codeBox.value.trim()}\n`;
+      if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}\n`;
+      
+      if (logEntry && !masterBox.value.includes(logEntry.trim())) {
+          if (!masterBox.value.includes("DAILY UPDATE")) {
+              masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
+          }
+          masterBox.value += `\n[${nowTime}] 👤 ${studentName}:\n${logEntry}`;
+      }
+      payload.master_summary = masterBox.value;
+  }
 
   try {
       if (window._updateDoc) {
