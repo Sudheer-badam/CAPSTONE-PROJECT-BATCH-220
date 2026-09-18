@@ -1927,13 +1927,26 @@
       }
       
       // Reset fields before loading new date
-      document.getElementById(`code-${student.id}`).value = '';
-      document.getElementById(`theory-${student.id}`).value = '';
-      document.getElementById(`file-${student.id}`).value = '';
-      if(document.getElementById(`caption-${student.id}`)) document.getElementById(`caption-${student.id}`).value = '';
-      document.getElementById(`preview-${student.id}`).src = '';
-      document.getElementById(`url-${student.id}`).value = '';
-      document.getElementById(`preview-container-${student.id}`).style.display = 'none';
+      const codeBox = document.getElementById(`code-${student.id}`);
+      if (codeBox) codeBox.value = '';
+      
+      const theoryBox = document.getElementById(`theory-${student.id}`);
+      if (theoryBox) theoryBox.value = '';
+      
+      const fileBox = document.getElementById(`file-${student.id}`);
+      if (fileBox) fileBox.value = '';
+      
+      const captionBox = document.getElementById(`caption-${student.id}`);
+      if (captionBox) captionBox.value = '';
+      
+      const previewImg = document.getElementById(`preview-${student.id}`);
+      if (previewImg) previewImg.src = '';
+      
+      const urlBox = document.getElementById(`url-${student.id}`);
+      if (urlBox) urlBox.value = '';
+      
+      const previewCont = document.getElementById(`preview-container-${student.id}`);
+      if (previewCont) previewCont.style.display = 'none';
     });
 
     if (unsubscribeContributions) unsubscribeContributions();
