@@ -40,11 +40,7 @@
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      if (userEmail === student.email) {
-        document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
-      } else {
-        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
-      }
+      document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
       
       // Reset fields before loading new date
       document.getElementById(`code-${student.id}`).value = '';
