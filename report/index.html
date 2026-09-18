@@ -1252,7 +1252,7 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Compiled Output)</div>
       </div>
-      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates chronologically <b>under each person's name</b> to keep a permanent history of what was saved over time.</p>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates purely chronologically as they happen, keeping a permanent timeline history.</p>
       <textarea spellcheck="true" id="contrib-master" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
@@ -1264,6 +1264,17 @@
       </div>
       <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically collects and compiles all the individual contributions by name based on what is currently typed in the boxes.</p>
       <textarea spellcheck="true" id="contrib-master-live" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+    </div>
+    </div>
+
+    <!-- Historical Auto-Generated Master Summary (By Name) -->
+    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (History Grouped By Name)</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically keeps a historical log of all saves, but organizes them by the person who wrote them.</p>
+      <textarea spellcheck="true" id="contrib-master-by-name" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
     <!-- Team Contributions Edit History Log -->
@@ -2008,6 +2019,9 @@
           const masterBox = document.getElementById("contrib-master");
           if (masterBox) masterBox.value = data.master_summary || "";
           
+          const masterByNameBox = document.getElementById("contrib-master-by-name");
+          if (masterByNameBox) masterByNameBox.value = data.master_summary_by_name || "";
+          
           if (window.updateMasterLiveContribution) window.updateMasterLiveContribution();
         }
       });
@@ -2432,10 +2446,22 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
             
             if (logEntry) {
                 const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                // Pure chronological append
+                if (!masterBox.value.includes(logEntry.trim())) {
+                    if (!masterBox.value.includes("DAILY UPDATE")) {
+                        masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
+                    }
+                    masterBox.value += `\n[${nowTime}] 👤 ${student.name}:\n${logEntry}`;
+                }
+
+                // By name append
                 window.appendToMasterSummaryByName(student.id, student.name, `[${nowTime}] ${logEntry}`);
             }
         }
         payload.master_summary = masterBox.value;
+        const byNameBox = document.getElementById("contrib-master-by-name");
+        if (byNameBox) payload.master_summary_by_name = byNameBox.value;
     }
 
     btn.innerHTML = `⏳ Saving...`;
@@ -2577,7 +2603,7 @@ window.editContrib = function(id) {
 
 window.appendToMasterSummaryByName = function(studentId, studentName, logText) {
     if (!logText) return;
-    const masterBox = document.getElementById("contrib-master");
+    const masterBox = document.getElementById("contrib-master-by-name");
     if (!masterBox) return;
     
     const datePicker = document.getElementById('contrib-date-picker');
@@ -2652,9 +2678,22 @@ window.saveContrib = async function(id) {
       if (theoryBox && theoryBox.value.trim()) logEntry += `[Theory Work]: ${theoryBox.value.trim()}`;
       
       if (logEntry) {
+          const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          // Pure chronological append
+          if (!masterBox.value.includes(logEntry.trim())) {
+              if (!masterBox.value.includes("DAILY UPDATE")) {
+                  masterBox.value = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n=========================================================\n`;
+              }
+              masterBox.value += `\n[${nowTime}] 👤 ${studentName}:\n${logEntry}`;
+          }
+
+          // By name append
           window.appendToMasterSummaryByName(id, studentName, `[${nowTime}] ${logEntry}`);
       }
       payload.master_summary = masterBox.value;
+      const byNameBox = document.getElementById("contrib-master-by-name");
+      if (byNameBox) payload.master_summary_by_name = byNameBox.value;
   }
 
   try {
