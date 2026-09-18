@@ -481,6 +481,10 @@
     .pdf-grid { grid-template-columns: 1fr; }
     .ppt-embed-wrap iframe { height: 320px !important; }
     .diary-header-grid { grid-template-columns: 1fr; }
+    
+    #btn-save-contrib { width: 100%; justify-content: center; margin-top: 10px; }
+    .master-summary-box { padding: 16px !important; margin-top: 16px !important; }
+    .master-summary-title { flex-wrap: wrap; }
   }
 
   /* Remove arrows from number inputs */
@@ -1247,7 +1251,7 @@
     </div>
 
     <!-- Master Box -->
-    <div style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1)); border: 1px solid var(--accent); border-radius: 12px; padding: 24px;">
+    <div class="master-summary-box" style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1)); border: 1px solid var(--accent); border-radius: 12px; padding: 24px;">
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Compiled Output)</div>
@@ -1257,8 +1261,8 @@
     </div>
 
     <!-- Live Auto-Generated Master Summary -->
-    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+    <div class="master-summary-box" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <div class="master-summary-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Current Live State)</div>
       </div>
@@ -1267,8 +1271,8 @@
     </div>
 
     <!-- Historical Auto-Generated Master Summary (By Name) -->
-    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+    <div class="master-summary-box" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <div class="master-summary-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (History Grouped By Name)</div>
       </div>
@@ -1277,8 +1281,8 @@
     </div>
 
     <!-- Team Contributions Edit History Log -->
-    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
-      <strong style="color: var(--text1); font-size: 15px; margin-bottom: 12px; display: block;">Team Edit History (Selected Date):</strong>
+    <div class="master-summary-box" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <strong class="master-summary-title" style="color: var(--text1); font-size: 15px; margin-bottom: 12px; display: block;">Team Edit History (Selected Date):</strong>
       <ul id="contrib-history" style="list-style-type: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto;">
         <li>Loading...</li>
       </ul>
