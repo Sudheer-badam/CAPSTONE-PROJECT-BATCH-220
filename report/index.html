@@ -1920,10 +1920,21 @@
       const currentEmail = (userEmail || "").toLowerCase();
       const studentEmail = (student.email || "").toLowerCase();
       
-      if (currentEmail === studentEmail || currentEmail.includes(student.id) || isNameMatch || currentEmail === "msubbarao@kluniversity.in") {
-        document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      let isMatch = false;
+      if (currentEmail === studentEmail || currentEmail.includes(student.id) || currentEmail === "msubbarao@kluniversity.in") {
+          isMatch = true;
+      } else if (isNameMatch) {
+          isMatch = true;
+      } else if (student.id === "2300033278" && (uName.includes("sudheer") || currentEmail.includes("sudheer") || uName.includes("badam"))) {
+          isMatch = true;
+      }
+
+      if (isMatch) {
+        const btn = document.getElementById(`btn-edit-${student.id}`);
+        if (btn) btn.style.display = 'inline-block';
       } else {
-        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+        const btn = document.getElementById(`btn-edit-${student.id}`);
+        if (btn) btn.style.display = 'none';
       }
       
       // Reset fields before loading new date
@@ -1974,17 +1985,15 @@
             }
             if (theoryBox && theoryBox.disabled) theoryBox.value = studentData.theory_work || "";
             if (captionBox && captionBox.disabled) captionBox.value = studentData.diagram_caption || "";
-            if (urlBox && codeBox.disabled) {
+            if (urlBox && theoryBox && theoryBox.disabled) {
                 urlBox.value = studentData.diagram_url || "";
-                if (studentData.diagram_caption) {
-          compiledText += `\n  * Photo Caption: ${studentData.diagram_caption}`;
-      }
-      if (studentData.diagram_url) {
-                    previewImg.src = studentData.diagram_url;
-                    previewCont.style.display = 'block';
+                if (studentData.diagram_url) {
+                    if (previewImg) previewImg.src = studentData.diagram_url;
+                    if (previewCont) previewCont.style.display = 'block';
                 } else {
-                    previewCont.style.display = 'none';
+                    if (previewCont) previewCont.style.display = 'none';
                 }
+            }
             }
           });
           updateMasterContribution();
@@ -2451,19 +2460,19 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       const urlBox = document.getElementById(`url-${student.id}`);
       const captionBox = document.getElementById(`caption-${student.id}`);
       
-      if (!codeBox) continue;
+      if (!codeBox && !theoryBox) continue;
       
-      let diagramUrl = urlBox.value;
+      let diagramUrl = urlBox ? urlBox.value : "";
       let captionText = captionBox ? captionBox.value : "";
       
       payload[student.id] = {
-        code_work: codeBox.value,
-        theory_work: theoryBox.value,
+        code_work: codeBox ? codeBox.value : "",
+        theory_work: theoryBox ? theoryBox.value : "",
         diagram_url: diagramUrl,
         diagram_caption: captionText
       };
       
-      if (fileInput.files && fileInput.files[0] && window._storage) {
+      if (fileInput && fileInput.files && fileInput.files[0] && window._storage) {
         const file = fileInput.files[0];
         const p = (async () => {
             try {
