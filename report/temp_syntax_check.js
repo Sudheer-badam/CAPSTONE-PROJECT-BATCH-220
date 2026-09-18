@@ -670,7 +670,15 @@
       if (!contentDiv) return;
 
       if (userEmail === student.email || userEmail === "msubbarao@kluniversity.in") {
+        const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
       } else {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
       }
@@ -1171,7 +1179,15 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       if (!contentDiv) return;
 
       if (userEmail === student.email || userEmail === "msubbarao@kluniversity.in") {
+        const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
       } else {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
       }

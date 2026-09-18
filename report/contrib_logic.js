@@ -40,7 +40,15 @@
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
       
       // Reset fields before loading new date
       document.getElementById(`code-${student.id}`).value = '';

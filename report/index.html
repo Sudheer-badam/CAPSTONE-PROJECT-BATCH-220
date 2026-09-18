@@ -68,11 +68,7 @@
       if (window.initContributions) window.initContributions();
       
       const isMentor = (window._currentUserEmail === "msubbarao@kluniversity.in");
-      const globalBtn = document.getElementById("btn-save-all-diaries");
-      if (globalBtn) globalBtn.style.display = isMentor ? 'inline-block' : 'none';
       for (let i = 1; i <= 13; i++) {
-        const saveBtn = document.getElementById(`btn-save-${i}`);
-        if (saveBtn) saveBtn.style.display = isMentor ? 'inline-block' : 'none';
 
         const markIds = ['2300033848', '2300032512', '2300032267', '2300033278', '2300030988'];
         markIds.forEach(studentId => {
@@ -121,11 +117,7 @@
       if (window.initContributions) window.initContributions();
       
       const isMentor = (email === "msubbarao@kluniversity.in");
-      const globalBtn = document.getElementById("btn-save-all-diaries");
-      if (globalBtn) globalBtn.style.display = isMentor ? 'inline-block' : 'none';
       for (let i = 1; i <= 13; i++) {
-        const saveBtn = document.getElementById(`btn-save-${i}`);
-        if (saveBtn) saveBtn.style.display = isMentor ? 'inline-block' : 'none';
 
         const markIds = ['2300033848', '2300032512', '2300032267', '2300033278', '2300030988'];
         markIds.forEach(studentId => {
@@ -1898,7 +1890,23 @@
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+        const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
       
       // Reset fields before loading new date
       document.getElementById(`code-${student.id}`).value = '';
@@ -2344,7 +2352,23 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+        const uName = (window._currentUserName || "").toLowerCase().trim();
+      const sName = student.name.toLowerCase().trim();
+      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
+      
+      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
+      } else {
+        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
+      }
       
       // Reset fields before loading new date
       document.getElementById(`code-${student.id}`).value = '';
