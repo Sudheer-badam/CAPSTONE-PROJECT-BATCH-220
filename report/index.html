@@ -1152,7 +1152,7 @@
           
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
-          <textarea spellcheck="true" id="theory-2300033848" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;"></textarea>
+          <textarea spellcheck="true" id="theory-2300033848" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterLiveContribution()"></textarea>
           
           
           
@@ -1173,7 +1173,7 @@
           
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
-          <textarea spellcheck="true" id="theory-2300032512" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;"></textarea>
+          <textarea spellcheck="true" id="theory-2300032512" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterLiveContribution()"></textarea>
           
           
           
@@ -1194,7 +1194,7 @@
           
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
-          <textarea spellcheck="true" id="theory-2300032267" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;"></textarea>
+          <textarea spellcheck="true" id="theory-2300032267" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterLiveContribution()"></textarea>
           
           
           
@@ -1215,7 +1215,7 @@
           
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
-          <textarea spellcheck="true" id="theory-2300033278" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;"></textarea>
+          <textarea spellcheck="true" id="theory-2300033278" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterLiveContribution()"></textarea>
           
           
           
@@ -1236,7 +1236,7 @@
           
           
           <label style="font-size: 12px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 4px;">Theory Work:</label>
-          <textarea spellcheck="true" id="theory-2300030988" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;"></textarea>
+          <textarea spellcheck="true" id="theory-2300030988" placeholder="Describe theory work..." disabled style="width: 100%; height: 60px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 8px; font-family: inherit; resize: vertical; margin-bottom: 10px;" oninput="updateMasterLiveContribution()"></textarea>
           
           
           
@@ -1254,6 +1254,16 @@
       </div>
       <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically appends new updates chronologically to keep a permanent history of what was saved over time.</p>
       <textarea spellcheck="true" id="contrib-master" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+    </div>
+
+    <!-- Live Auto-Generated Master Summary -->
+    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <div style="font-weight: 800; font-size: 18px; color: var(--text1);">Master Summary (Current Live State)</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">This box automatically collects and compiles all the individual contributions by name based on what is currently typed in the boxes.</p>
+      <textarea spellcheck="true" id="contrib-master-live" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
     <!-- Team Contributions Edit History Log -->
@@ -1997,6 +2007,8 @@
           });
           const masterBox = document.getElementById("contrib-master");
           if (masterBox) masterBox.value = data.master_summary || "";
+          
+          if (window.updateMasterLiveContribution) window.updateMasterLiveContribution();
         }
       });
       // Listen to history subcollection for this date
@@ -2705,6 +2717,31 @@ window.saveContrib = async function(id) {
       }
     });
   });
+  window.updateMasterLiveContribution = function() {
+    const liveBox = document.getElementById("contrib-master-live");
+    if (!liveBox) return;
+    const datePicker = document.getElementById('contrib-date-picker');
+    const selectedDate = datePicker ? datePicker.value : new Date().toISOString().split('T')[0];
+
+    let compiledText = `🔥 TEAM CAPSTONE BATCH 220 - DAILY UPDATE (${selectedDate}) 🔥\n`;
+    compiledText += "=========================================================\n\n";
+
+    STUDENTS.forEach(student => {
+      const code = document.getElementById(`code-${student.id}`)?.value.trim() || "";
+      const theory = document.getElementById(`theory-${student.id}`)?.value.trim() || "";
+      
+      compiledText += `👤 ${student.name} (${student.id}):\n`;
+      if (code || theory) {
+        if (code) compiledText += `[Code Work]: ${code}\n`;
+        if (theory) compiledText += `[Theory Work]: ${theory}\n`;
+      } else {
+        compiledText += "No updates provided yet.\n";
+      }
+      compiledText += "\n";
+    });
+
+    liveBox.value = compiledText;
+  };
 
   window.changeLanguage = function(sid) {
     const langSelect = document.getElementById('lang-' + sid);
