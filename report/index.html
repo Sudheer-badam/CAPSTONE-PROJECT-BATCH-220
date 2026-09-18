@@ -2449,12 +2449,11 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       let diagramUrl = urlBox ? urlBox.value : "";
       let captionText = captionBox ? captionBox.value : "";
       
-      payload[student.id] = {
-        code_work: codeBox ? codeBox.value : "",
-        theory_work: theoryBox ? theoryBox.value : "",
-        diagram_url: diagramUrl,
-        diagram_caption: captionText
-      };
+      payload[student.id] = {};
+      if (codeBox) payload[student.id].code_work = codeBox.value;
+      if (theoryBox) payload[student.id].theory_work = theoryBox.value;
+      if (urlBox) payload[student.id].diagram_url = urlBox.value;
+      if (captionBox) payload[student.id].diagram_caption = captionBox.value;
       
       if (fileInput && fileInput.files && fileInput.files[0] && window._storage) {
         const file = fileInput.files[0];
@@ -2587,23 +2586,67 @@ window.saveContrib = async function(id) {
   const fileBox = document.getElementById(`file-${id}`);
   if (fileBox) fileBox.disabled = true;
 
-  
   const saveBtn = document.getElementById('btn-save-' + id);
   const editBtn = document.getElementById('btn-edit-' + id);
   
-  const originalSaveText = saveBtn.innerHTML;
-  saveBtn.innerHTML = '⏳ Uploading...';
+  const originalSaveText = saveBtn ? saveBtn.innerHTML : "";
+  if (saveBtn) saveBtn.innerHTML = `⏳...`;
+
+  const datePicker = document.getElementById('contrib-date-picker');
+  const selectedDate = datePicker ? datePicker.value : new Date().toISOString().split('T')[0];
+
+  const payload = {};
+  if (codeBox) payload[`${id}.code_work`] = codeBox.value;
+  if (theoryBox) payload[`${id}.theory_work`] = theoryBox.value;
   
-  if (window.saveContributions) {
-    await window.saveContributions();
+  const urlBox = document.getElementById(`url-${id}`);
+  if (urlBox) payload[`${id}.diagram_url`] = urlBox.value;
+  
+  const captionBox = document.getElementById(`caption-${id}`);
+  if (captionBox) payload[`${id}.diagram_caption`] = captionBox.value;
+
+  const masterBox = document.getElementById("contrib-master");
+  if (masterBox) payload.master_summary = masterBox.value;
+
+  try {
+      if (window._updateDoc) {
+          try {
+              await window._updateDoc(window._doc(window._db, "team_progress", selectedDate), payload);
+          } catch(e) {
+              if (e.code === 'not-found' && window._setDoc) {
+                  const nested = { [id]: {} };
+                  if (codeBox) nested[id].code_work = codeBox.value;
+                  if (theoryBox) nested[id].theory_work = theoryBox.value;
+                  if (masterBox) nested.master_summary = masterBox.value;
+                  await window._setDoc(window._doc(window._db, "team_progress", selectedDate), nested, { merge: true });
+              } else {
+                  throw e;
+              }
+          }
+      }
+      
+      if(window.setServerStatus) window.setServerStatus(0);
+      if (saveBtn) saveBtn.innerHTML = `✅ Saved!`;
+      setTimeout(() => {
+          if (saveBtn) saveBtn.style.display = 'none';
+          if (editBtn) editBtn.style.display = 'inline-block';
+          if (saveBtn) saveBtn.innerHTML = originalSaveText;
+          if (contentDiv) {
+              contentDiv.style.pointerEvents = 'auto';
+              contentDiv.style.opacity = '1';
+          }
+      }, 2000);
+  } catch(error) {
+      console.error(error);
+      if (saveBtn) saveBtn.innerHTML = `❌ Error`;
+      setTimeout(() => {
+          if (saveBtn) saveBtn.innerHTML = originalSaveText;
+          if (contentDiv) {
+              contentDiv.style.pointerEvents = 'auto';
+              contentDiv.style.opacity = '1';
+          }
+      }, 3000);
   }
-  
-  saveBtn.innerHTML = '✅ Saved!';
-  setTimeout(() => {
-      saveBtn.style.display = 'none';
-      editBtn.style.display = 'inline-block';
-      saveBtn.innerHTML = originalSaveText;
-  }, 1500);
 };
 
 </script>
