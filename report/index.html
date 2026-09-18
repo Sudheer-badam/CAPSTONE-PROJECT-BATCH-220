@@ -1256,6 +1256,14 @@
       <textarea spellcheck="true" id="contrib-master" readonly style="width: 100%; height: 200px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 16px; font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
     </div>
 
+    <!-- Team Contributions Edit History Log -->
+    <div style="margin-top: 24px; padding: 24px; border: 1px dashed var(--border); border-radius: 12px; font-size: 13px; color: var(--text2); background: var(--card);">
+      <strong style="color: var(--text1); font-size: 15px; margin-bottom: 12px; display: block;">Team Edit History (Selected Date):</strong>
+      <ul id="contrib-history" style="list-style-type: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto;">
+        <li>Loading...</li>
+      </ul>
+    </div>
+
   </div>
 
 
@@ -1387,7 +1395,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
             <h3 style="font-size: 18px; font-weight: 800; color: var(--text1); margin: 0;">Capstone Project Diary &mdash; Week ${i}</h3>
             <div style="display: flex; gap: 10px; align-items: center;" class="no-print">
-              <span id="status-week${i}" style="font-size: 12px; color: var(--green); opacity: 0; transition: 0.3s;">[Saved] Saved</span>
+              <span id="status-week${i}" style="font-size: 12px; color: var(--green); opacity: 0; transition: 0.3s;">Saved</span>
               <button id="btn-save-${i}" onclick="saveWeek(${i})" style="padding: 6px 14px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">Save</button>
               <button onclick="downloadPdf(${i})" style="padding: 6px 14px; background: transparent; color: var(--text2); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;"> Export PDF</button>
             </div>
@@ -1460,6 +1468,22 @@
       `;
     }
     diaryContainer.innerHTML = html;
+
+    // Apply role-based disabling for marks
+    const isMentor = (window._currentUserEmail === "msubbarao@kluniversity.in");
+    for (let i = 1; i <= 13; i++) {
+      const markIds = ['2300033848', '2300032512', '2300032267', '2300033278', '2300030988'];
+      markIds.forEach(studentId => {
+          const el = document.getElementById(`w${i}-marks-${studentId}`);
+          if (el) {
+              el.disabled = !isMentor;
+              if (!isMentor) {
+                el.style.opacity = "0.7";
+                el.style.cursor = "not-allowed";
+              }
+          }
+      });
+    }
   }
 
   // Auto-show day name when date is picked
@@ -1890,20 +1914,8 @@
       const contentDiv = document.getElementById(`content-${student.id}`);
       if (!contentDiv) return;
 
-      const uName = (window._currentUserName || "").toLowerCase().trim();
-      const sName = student.name.toLowerCase().trim();
-      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
-      
-      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
-        const uName = (window._currentUserName || "").toLowerCase().trim();
-      const sName = student.name.toLowerCase().trim();
-      const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
-      
-      if (userEmail === student.email || userEmail.includes(student.id) || isNameMatch || window._currentUserEmail === "msubbarao@kluniversity.in") {
+      if (userEmail === student.email || window._currentUserEmail === "msubbarao@kluniversity.in") {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'inline-block';
-      } else {
-        document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
-      }
       } else {
         document.getElementById(`btn-edit-${student.id}`).style.display = 'none';
       }
@@ -1957,6 +1969,30 @@
             }
           });
           updateMasterContribution();
+        }
+      });
+      // Listen to history subcollection for this date
+      const historyRef = window._query(
+        window._collection(window._db, "team_progress", selectedDate, "history"),
+        window._orderBy("savedAt", "desc")
+      );
+      window._onSnapshot(historyRef, (snapshot) => {
+        const historyDocs = snapshot.docs.map(d => d.data());
+        const ul = document.getElementById(`contrib-history`);
+        if (!ul) return;
+        ul.innerHTML = '';
+        if (historyDocs && historyDocs.length > 0) {
+          historyDocs.forEach((entry) => {
+            const li = document.createElement('li');
+            li.style.cssText = 'margin-bottom:8px; padding:7px 10px; background:var(--surface); border-radius:8px; border-left:3px solid var(--accent);';
+            const userName = entry.name || entry.email || "Unknown";
+            const savedAt = entry.saved_at || "";
+            const changedHtml = entry.changed_fields ? `<div style="margin-top:3px;font-size:11px;color:var(--accent2);">Updated: ${entry.changed_fields}</div>` : '';
+            li.innerHTML = `<span style="color:var(--accent2);font-size:12px;">${savedAt}</span> &mdash; <strong>${userName}</strong>${changedHtml}`;
+            ul.appendChild(li);
+          });
+        } else {
+          ul.innerHTML = '<li style="color:var(--text2);">No edits yet for this date.</li>';
         }
       });
     }
@@ -2609,6 +2645,18 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
     // OPTIMISTIC SAVE: Immediately save the text fields so the UI feels instant
     try {
       await window._setDoc(window._doc(window._db, "team_progress", selectedDate), payload, { merge: true });
+      
+      // Save history entry
+      const userName = window._currentUserName || "Unknown";
+      const userEmail = window._currentUserEmail || "Unknown";
+      const historyColRef = window._collection(window._db, "team_progress", selectedDate, "history");
+      await window._addDoc(historyColRef, {
+        name: userName,
+        email: userEmail,
+        saved_at: new Date().toLocaleString(),
+        savedAt: Date.now(),
+        changed_fields: "Team contributions"
+      });
     } catch (err) {
       console.error(err);
     }
