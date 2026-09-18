@@ -1917,7 +1917,7 @@
       const uName = (window._currentUserName || "").toLowerCase().trim();
       const sName = student.name.toLowerCase().trim();
       const isNameMatch = uName && (sName.includes(uName.split(' ')[0]) || uName.includes(sName.split(' ')[0]));
-      const currentEmail = (window._currentUserEmail || "").toLowerCase();
+      const currentEmail = (userEmail || "").toLowerCase();
       const studentEmail = (student.email || "").toLowerCase();
       
       if (currentEmail === studentEmail || currentEmail.includes(student.id) || isNameMatch || currentEmail === "msubbarao@kluniversity.in") {
@@ -2269,6 +2269,9 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
 
   // Build the UI on load
   buildDiaryUI();
+  if (window._currentUserEmail) {
+      window.initContributions();
+  }
 
   // 
   window.saveAllDiaries = async function() {
