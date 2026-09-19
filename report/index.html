@@ -3242,11 +3242,20 @@ window.saveContrib = async function(id) {
 </div>
 
 <script>
+  function closeAllModals() {
+    const modals = ['support-modal', 'admin-inbox-modal', 'notifications-modal'];
+    modals.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+
   function toggleSupportModal() {
     const modal = document.getElementById('support-modal');
     if (modal.style.display === 'flex') {
       modal.style.display = 'none';
     } else {
+      closeAllModals();
       modal.style.display = 'flex';
       // Auto-fill details if logged in
       if (window._currentUserName) document.getElementById('support-name').value = window._currentUserName;
@@ -3312,6 +3321,7 @@ window.saveContrib = async function(id) {
     if (modal.style.display === 'flex') {
       modal.style.display = 'none';
     } else {
+      closeAllModals();
       modal.style.display = 'flex';
       await loadAdminTickets();
     }
@@ -3383,6 +3393,7 @@ window.saveContrib = async function(id) {
     if (modal.style.display === 'flex') {
       modal.style.display = 'none';
     } else {
+      closeAllModals();
       modal.style.display = 'flex';
       
       if (window._currentUserEmail && window._totalResolvedTickets !== undefined) {
