@@ -14,7 +14,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, getDocs, onSnapshot, addDoc, updateDoc, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, getDocs, onSnapshot, addDoc, updateDoc, collection, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
@@ -42,6 +42,7 @@
   window._updateDoc    = updateDoc;
   window._collection   = collection;
   window._query        = query;
+  window._where        = where;
   window._orderBy      = orderBy;
   const storage = getStorage(app);
   window._storage = storage;
@@ -3436,14 +3437,21 @@ window.saveContrib = async function(id) {
 
   function checkUnreadNotifications() {
     if (!window._currentUserEmail || !window._db || !window._onSnapshot) return;
+    
+    if (window._currentUserEmail === "2300033278@kluniversity.in") {
+      const bell = document.getElementById('notification-bell-container');
+      if (bell) bell.style.display = 'none';
+      return;
+    }
+
     try {
-      const q = window._query(window._collection(window._db, "support_tickets"));
+      const q = window._query(window._collection(window._db, "support_tickets"), window._where("email", "==", window._currentUserEmail));
       window._onSnapshot(q, (snapshot) => {
         let currentCount = 0;
         let hasUnread = false;
         snapshot.forEach(doc => {
           const data = doc.data();
-          if (data.email === window._currentUserEmail && data.resolved === true) {
+          if (data.resolved === true) {
             hasUnread = true;
             currentCount++;
           }
