@@ -3384,7 +3384,12 @@ window.saveContrib = async function(id) {
       modal.style.display = 'none';
     } else {
       modal.style.display = 'flex';
+      
+      if (window._currentUserEmail && window._totalResolvedTickets !== undefined) {
+        localStorage.setItem('seen_notifs_' + window._currentUserEmail, window._totalResolvedTickets);
+      }
       document.getElementById('notification-badge').style.display = 'none';
+      
       await loadUserNotifications();
     }
   }
@@ -3437,30 +3442,26 @@ window.saveContrib = async function(id) {
 
   function checkUnreadNotifications() {
     if (!window._currentUserEmail || !window._db || !window._onSnapshot) return;
-    
-    if (window._currentUserEmail === "2300033278@kluniversity.in") {
-      const bell = document.getElementById('notification-bell-container');
-      if (bell) bell.style.display = 'none';
-      return;
-    }
 
     try {
       const q = window._query(window._collection(window._db, "support_tickets"), window._where("email", "==", window._currentUserEmail));
       window._onSnapshot(q, (snapshot) => {
         let currentCount = 0;
-        let hasUnread = false;
         snapshot.forEach(doc => {
           const data = doc.data();
           if (data.resolved === true) {
-            hasUnread = true;
             currentCount++;
           }
         });
 
-        if (hasUnread) {
+        const seenCount = parseInt(localStorage.getItem('seen_notifs_' + window._currentUserEmail) || '0', 10);
+        const unreadCount = currentCount - seenCount;
+        window._totalResolvedTickets = currentCount;
+
+        if (unreadCount > 0) {
           const badge = document.getElementById('notification-badge');
           badge.style.display = 'flex';
-          badge.textContent = currentCount;
+          badge.textContent = unreadCount;
         } else {
           document.getElementById('notification-badge').style.display = 'none';
         }
