@@ -3431,22 +3431,71 @@ window.saveContrib = async function(id) {
     }
   }
 
-  async function checkUnreadNotifications() {
-    if (!window._currentUserEmail || !window._db) return;
+  let _lastNotificationCount = 0;
+  let _isInitialNotificationLoad = true;
+
+  function checkUnreadNotifications() {
+    if (!window._currentUserEmail || !window._db || !window._onSnapshot) return;
     try {
       const q = window._query(window._collection(window._db, "support_tickets"));
-      const snapshot = await window._getDocs(q);
-      let hasUnread = false;
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.email === window._currentUserEmail && data.resolved === true) {
-          hasUnread = true;
+      window._onSnapshot(q, (snapshot) => {
+        let currentCount = 0;
+        let hasUnread = false;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (data.email === window._currentUserEmail && data.resolved === true) {
+            hasUnread = true;
+            currentCount++;
+          }
+        });
+
+        if (hasUnread) {
+          document.getElementById('notification-badge').style.display = 'block';
+        } else {
+          document.getElementById('notification-badge').style.display = 'none';
         }
+
+        if (!_isInitialNotificationLoad && currentCount > _lastNotificationCount) {
+          playNotificationSoundAndVibrate();
+        }
+        
+        _lastNotificationCount = currentCount;
+        _isInitialNotificationLoad = false;
       });
-      if (hasUnread) {
-        document.getElementById('notification-badge').style.display = 'block';
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  function playNotificationSoundAndVibrate() {
+    try {
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
       }
-    } catch(e) {}
+      
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1);
+        
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.3);
+      }
+    } catch(e) {
+      console.log("Audio/Vibrate not supported or blocked");
+    }
   }
 </script>
 </body>
