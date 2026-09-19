@@ -3237,7 +3237,7 @@ window.saveContrib = async function(id) {
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
   </svg>
-  <div id="notification-badge" style="display: none; position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; border: 2px solid var(--bg);"></div>
+  <div id="notification-badge" style="display: none; position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; background: var(--red); border-radius: 50%; border: 2px solid var(--bg); color: white; font-size: 10px; font-weight: bold; align-items: center; justify-content: center; text-align: center; line-height: 14px;">0</div>
 </div>
 
 <script>
@@ -3450,7 +3450,9 @@ window.saveContrib = async function(id) {
         });
 
         if (hasUnread) {
-          document.getElementById('notification-badge').style.display = 'block';
+          const badge = document.getElementById('notification-badge');
+          badge.style.display = 'flex';
+          badge.textContent = currentCount;
         } else {
           document.getElementById('notification-badge').style.display = 'none';
         }
