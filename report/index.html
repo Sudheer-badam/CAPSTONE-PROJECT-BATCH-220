@@ -1408,6 +1408,7 @@
 
   const fields = [
     { id: 'obj',          label: 'Weekly Objectives:' },
+    { id: 'extra_obj',    label: 'Extra Objectives:' },
     { id: 'work',         label: 'Work Completed:' },
     { id: 'hw',           label: 'Hardware Progress:',               half: true },
     { id: 'sw',           label: 'Software Progress:',               half: true },
@@ -1629,6 +1630,58 @@
     }
   }
 
+  async function getFirebaseTrackingMetadata(userEmail, moduleKey) {
+    const userName = window._currentUserName || document.getElementById("user-name")?.textContent || "Anonymous";
+    const email = userEmail || window._currentUserEmail || "";
+    
+    // Detect device / browser
+    const ua = navigator.userAgent;
+    let deviceInfo = /Android/.test(ua) ? "Android Mobile"
+                   : /iPhone|iPad/.test(ua) ? "iOS Device"
+                   : /Windows/.test(ua) ? "Windows PC"
+                   : /Mac/.test(ua) ? "Mac"
+                   : /Linux/.test(ua) ? "Linux" : "Unknown Device";
+    const browser  = /Edg\//.test(ua) ? "Edge" : /Chrome/.test(ua) ? "Chrome" : /Firefox/.test(ua) ? "Firefox" : /Safari/.test(ua) ? "Safari" : "Browser";
+    deviceInfo = `${deviceInfo} - ${browser}`;
+
+    // Fetch IP + geolocation address (stored in Firebase only)
+    let userIp = "Unavailable", userAddress = "Unavailable";
+    try {
+      const geoRes  = await fetch("https://ipapi.co/json/");
+      const geoData = await geoRes.json();
+      userIp      = geoData.ip || "Unavailable";
+      userAddress = [geoData.city, geoData.region, geoData.postal, geoData.country_name].filter(Boolean).join(', ');
+    } catch(e) {}
+
+    // Edit count
+    let userEditCount = 1;
+    if (moduleKey && moduleKey.startsWith("diaries_")) {
+      const week = moduleKey.split("_")[1];
+      const prevHistory = window.cloudDataStore && window.cloudDataStore[week] ? window.cloudDataStore[week]._historyCount || {} : {};
+      userEditCount = (prevHistory[email] || 0) + 1;
+      if (window.cloudDataStore && window.cloudDataStore[week]) {
+        if (!window.cloudDataStore[week]._historyCount) window.cloudDataStore[week]._historyCount = {};
+        window.cloudDataStore[week]._historyCount[email] = userEditCount;
+      }
+    } else {
+      if (!window._generalHistoryCount) window._generalHistoryCount = {};
+      const key = `${moduleKey}_${email}`;
+      userEditCount = (window._generalHistoryCount[key] || 0) + 1;
+      window._generalHistoryCount[key] = userEditCount;
+    }
+
+    return {
+      name: userName,
+      email: email,
+      device: deviceInfo,
+      ip_address: userIp,
+      address: userAddress,
+      edit_number: userEditCount,
+      saved_at: new Date().toLocaleString(),
+      savedAt: Date.now()
+    };
+  }
+
   window.saveWeek = async function(week) {
     if(window.setServerStatus) window.setServerStatus(1);
     const btn = document.getElementById(`btn-save-${week}`);
@@ -1670,31 +1723,10 @@
       return;
     }
 
-    const userName  = window._currentUserName  || document.getElementById("user-name")?.textContent || "Anonymous";
     const userEmail = window._currentUserEmail || "";
-
-    // Detect device / browser
-    const ua = navigator.userAgent;
-    let deviceInfo = /Android/.test(ua) ? "Android Mobile"
-                   : /iPhone|iPad/.test(ua) ? "iOS Device"
-                   : /Windows/.test(ua) ? "Windows PC"
-                   : /Mac/.test(ua) ? "Mac"
-                   : /Linux/.test(ua) ? "Linux" : "Unknown Device";
-    const browser  = /Edg\//.test(ua) ? "Edge" : /Chrome/.test(ua) ? "Chrome" : /Firefox/.test(ua) ? "Firefox" : /Safari/.test(ua) ? "Safari" : "Browser";
-    deviceInfo = `${deviceInfo} - ${browser}`;
-
-    // Fetch IP + geolocation address (stored in Firebase only)
-    let userIp = "Unavailable", userAddress = "Unavailable";
-    try {
-      const geoRes  = await fetch("https://ipapi.co/json/");
-      const geoData = await geoRes.json();
-      userIp      = geoData.ip || "Unavailable";
-      userAddress = [geoData.city, geoData.region, geoData.postal, geoData.country_name].filter(Boolean).join(', ');
-    } catch(e) {}
-
-    // Edit count for this user on this week
-    const prevHistory = window.cloudDataStore[week]?._historyCount || {};
-    const userEditCount = (prevHistory[userEmail] || 0) + 1;
+    
+    // Fetch common metadata
+    const trackingMeta = await getFirebaseTrackingMetadata(userEmail, `diaries_${week}`);
 
     try {
       // 1. Save flat diary fields to the week document
@@ -1703,17 +1735,8 @@
 
       // 2. Add a clean history entry as its own document in the subcollection
       const historyColRef = window._collection(window._db, "diaries", `week_${week}`, "history");
-      await window._addDoc(historyColRef, {
-        name:          userName,
-        email:         userEmail,
-        device:        deviceInfo,
-        ip_address:    userIp,
-        address:       userAddress,
-        edit_number:   userEditCount,
-        saved_at:      new Date().toLocaleString(),
-        savedAt:       Date.now(),    // numeric for ordering
-        changed_fields: changedLabels.join(', ')
-      });
+      const historyEntry = { ...trackingMeta, changed_fields: changedLabels.join(', ') };
+      await window._addDoc(historyColRef, historyEntry);
 
       if(window.setServerStatus) window.setServerStatus(0);
       // Update local cache
@@ -2570,14 +2593,11 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
       await window._setDoc(window._doc(window._db, "team_progress", selectedDate), payload, { merge: true });
       
       // Save history entry
-      const userName = window._currentUserName || "Unknown";
       const userEmail = window._currentUserEmail || "Unknown";
+      const trackingMeta = await getFirebaseTrackingMetadata(userEmail, `team_progress_${selectedDate}`);
       const historyColRef = window._collection(window._db, "team_progress", selectedDate, "history");
       await window._addDoc(historyColRef, {
-        name: userName,
-        email: userEmail,
-        saved_at: new Date().toLocaleString(),
-        savedAt: Date.now(),
+        ...trackingMeta,
         changed_fields: "Team contributions"
       });
     } catch (err) {
@@ -3300,7 +3320,9 @@ window.saveContrib = async function(id) {
         throw new Error("Database not loaded.");
       }
       
+      const trackingMeta = await getFirebaseTrackingMetadata(email, "support_tickets");
       const payload = {
+        ...trackingMeta,
         name,
         email,
         message,
