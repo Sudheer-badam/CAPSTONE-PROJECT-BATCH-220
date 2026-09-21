@@ -5,7 +5,7 @@
     { id: "2300032512", name: "Inti Hanitha Sai Gayathri", email: "2300032512@kluniversity.in" },
     { id: "2300032267", name: "Kokkiligadda T.V. Durga Rao", email: "2300032267@kluniversity.in" },
     { id: "2300033278", name: "Badam Sudheer Reddy", email: "2300033278@kluniversity.in" },
-    { id: "2300030988", name: "Garikapati Satya Karthika", email: "2300030988@kluniversity.in" }
+    { id: "2300030988", name: "Garikipati Satya Keerthika", email: "2300030988@kluniversity.in" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {

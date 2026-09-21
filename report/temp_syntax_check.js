@@ -225,7 +225,7 @@
                   <input type="number" min="0" max="10" oninput="if(this.value>10) this.value=10; if(this.value<0) this.value=0;" id="w${i}-marks-2300033278" placeholder="/ 10" style="width:100%; padding:6px 10px; background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:6px; outline:none;" />
                 </div>
                 <div>
-                  <label style="display:block; font-size:11px; font-weight:600; color:var(--text2); margin-bottom:4px;">Garikapati Satya Karthika</label>
+                  <label style="display:block; font-size:11px; font-weight:600; color:var(--text2); margin-bottom:4px;">Garikipati Satya Keerthika</label>
                   <input type="number" min="0" max="10" oninput="if(this.value>10) this.value=10; if(this.value<0) this.value=0;" id="w${i}-marks-2300030988" placeholder="/ 10" style="width:100%; padding:6px 10px; background:var(--surface); color:var(--text1); border:1px solid var(--border); border-radius:6px; outline:none;" />
                 </div>
               </div>
@@ -634,7 +634,7 @@
     { id: "2300032512", name: "Inti Hanitha Sai Gayathri", email: "2300032512@kluniversity.in" },
     { id: "2300032267", name: "Kokkiligadda T.V. Durga Rao", email: "2300032267@kluniversity.in" },
     { id: "2300033278", name: "Badam Sudheer Reddy", email: "2300033278@kluniversity.in" },
-    { id: "2300030988", name: "Garikapati Satya Karthika", email: "2300030988@kluniversity.in" }
+    { id: "2300030988", name: "Garikipati Satya Keerthika", email: "2300030988@kluniversity.in" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -1143,7 +1143,7 @@ window.compressImage = function(file, maxWidth = 1024, quality = 0.7) {
     { id: "2300032512", name: "Inti Hanitha Sai Gayathri", email: "2300032512@kluniversity.in" },
     { id: "2300032267", name: "Kokkiligadda T.V. Durga Rao", email: "2300032267@kluniversity.in" },
     { id: "2300033278", name: "Badam Sudheer Reddy", email: "2300033278@kluniversity.in" },
-    { id: "2300030988", name: "Garikapati Satya Karthika", email: "2300030988@kluniversity.in" }
+    { id: "2300030988", name: "Garikipati Satya Keerthika", email: "2300030988@kluniversity.in" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {

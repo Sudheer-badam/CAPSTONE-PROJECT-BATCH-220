@@ -49,7 +49,7 @@ html = '''
       <!-- Student 5 -->
       <div class="contrib-box" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative;">
         <div id="lock-2300030988" style="position: absolute; top: 16px; right: 16px; color: var(--accent);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-        <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Garikapati Satya Karthika</div>
+        <div style="font-weight: 700; color: var(--text1); margin-bottom: 8px;">Garikipati Satya Keerthika</div>
         <div style="font-size: 12px; color: var(--text2); margin-bottom: 12px;">2300030988@kluniversity.in</div>
         <textarea spellcheck="true" id="contrib-2300030988" placeholder="Locked..." disabled style="width: 100%; height: 100px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text1); padding: 12px; font-family: inherit; resize: vertical;" oninput="updateMasterContribution()"></textarea>
       </div>
