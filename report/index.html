@@ -61,6 +61,7 @@
     // DEV BYPASS LOGIC
     if (!user && sessionStorage.getItem("dev_bypass") === "true") {
       console.warn("DEV BYPASS ACTIVE: Simulating logged-in user.");
+      document.body.style.display = "block";
       window._currentUserEmail = "dev@kluniversity.in";
       window._currentUserName  = "Local Developer";
       if (document.getElementById("user-name")) document.getElementById("user-name").textContent = window._currentUserName;
@@ -99,6 +100,9 @@
         signOut(auth).then(() => { window.location.href = "login.html"; });
         return;
       }
+      
+      document.body.style.display = "block";
+      
       // Populate user profile in header
       const name  = user.displayName || sessionStorage.getItem("capstone_user") || email.split("@")[0];
       const photo = user.photoURL;
@@ -544,7 +548,7 @@
     applyTheme(savedTheme);
   </script>
 </head>
-<body>
+<body style="display: none;">
 <!-- --- HEADER --- -->
 <header>
   <div class="header-left">
