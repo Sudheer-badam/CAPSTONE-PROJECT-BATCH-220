@@ -1149,10 +1149,10 @@
         <div class="section-sub" style="margin-bottom: 16px;">Your individual contribution box is automatically unlocked when you log in. The master box compiles everything.</div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <label style="font-weight: 600; color: var(--text2); font-size: 14px;">Select Date for Updates:</label>
-          <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px;">
-            <input type="date" id="contrib-date-picker" onchange="window.initContributions(); if(window.updateDateImageIcon) window.updateDateImageIcon(this.value, 'contrib-date-img'); const display = document.getElementById('contrib-day-display'); if(display) { display.textContent = this.value ? new Date(this.value + 'T00:00:00').toLocaleDateString('default', {weekday: 'long'}) : ''; display.style.display = this.value ? 'flex' : 'none'; }" style="flex: 1; min-width: 0; padding: 8px 14px; background: var(--surface); color: var(--text1); border: 1px solid var(--border); border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
-            <div id="contrib-day-display" style="display: none; padding: 8px 14px; background: var(--card); color: var(--accent2); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; min-height: 40px; align-items: center;"></div>
-            <img id="contrib-date-img" style="height: 40px; border-radius: 8px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;" />
+          <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; flex-wrap: wrap;">
+            <input type="date" id="contrib-date-picker" onchange="window.initContributions(); if(window.updateDateImageIcon) window.updateDateImageIcon(this.value, 'contrib-date-img'); const display = document.getElementById('contrib-day-display'); if(display) { display.textContent = this.value ? new Date(this.value + 'T00:00:00').toLocaleDateString('default', {weekday: 'long'}) : ''; display.style.display = this.value ? 'flex' : 'none'; }" style="flex: 1; min-width: 140px; padding: 12px 14px; background: var(--surface); color: var(--text1); border: 1px solid var(--border); border-radius: 8px; outline: none; font-family: inherit; font-weight: 500; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+            <div id="contrib-day-display" style="display: none; padding: 8px 14px; background: var(--card); color: var(--accent2); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; min-height: 48px; align-items: center;"></div>
+            <img id="contrib-date-img" style="height: 48px; border-radius: 8px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;" />
           </div>
         </div>
       </div>
@@ -1467,11 +1467,11 @@
             <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; padding:14px; background:var(--surface); border-radius:10px; border:1px solid var(--border);">
               <div style="flex:1; min-width:140px;">
                 <label style="display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px;">Date Week Start Date</label>
-                <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 8px; width: 100%; flex-wrap: wrap;">
                   <input type="date" id="w${i}-date"
-                    style="flex: 1; min-width: 0; padding:8px 10px; background:var(--card); color:var(--text1); border:1px solid var(--border); border-radius:8px; font-family:'Inter',sans-serif; font-size:13px; outline:none;"
+                    style="flex: 1; min-width: 140px; padding:12px 10px; background:var(--card); color:var(--text1); border:1px solid var(--border); border-radius:8px; font-family:'Inter',sans-serif; font-size:13px; outline:none;"
                     oninput="updateDay(${i})" />
-                  <img id="w${i}-date-img" style="height: 36px; border-radius: 6px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;" />
+                  <img id="w${i}-date-img" style="height: 48px; border-radius: 8px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;" />
                 </div>
               </div>
               <div style="flex:0 0 120px;">
@@ -1563,13 +1563,13 @@
     const year = d.getFullYear();
     const dayName = d.toLocaleString('default', { weekday: 'short' }).toUpperCase();
 
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="68" height="72" viewBox="0 0 68 72">
-        <rect width="68" height="72" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
-        <rect width="68" height="20" rx="8" fill="#4f46e5"/>
-        <path d="M0,20 h68" stroke="#4f46e5" stroke-width="2"/>
-        <text x="34" y="14" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">${month} ${year}</text>
-        <text x="34" y="44" font-family="sans-serif" font-size="24" font-weight="bold" fill="#333333" text-anchor="middle">${day}</text>
-        <text x="34" y="64" font-family="sans-serif" font-size="10" font-weight="bold" fill="#666666" text-anchor="middle" letter-spacing="0.5">${dayName}</text>
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="84" height="88" viewBox="0 0 84 88">
+        <rect width="84" height="88" rx="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+        <rect width="84" height="24" rx="10" fill="#4f46e5"/>
+        <path d="M0,24 h84" stroke="#4f46e5" stroke-width="2"/>
+        <text x="42" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">${month} ${year}</text>
+        <text x="42" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="900" fill="#333333" text-anchor="middle">${day}</text>
+        <text x="42" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="800" fill="#666666" text-anchor="middle" letter-spacing="1">${dayName}</text>
     </svg>`;
     
     imgEl.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
