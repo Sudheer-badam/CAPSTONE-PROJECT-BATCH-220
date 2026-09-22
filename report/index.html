@@ -568,9 +568,10 @@
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" style="margin-bottom: 20px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
     <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 12px; color: white;">Location Access Required</h2>
     <p id="location-msg" style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 24px;">
-      This platform requires your precise GPS location to provide real-time tracking features. Please click <strong>Allow</strong> when your browser prompts you.
+      This platform requires your precise GPS location to provide real-time tracking features.<br>Click the button below and select <strong>Allow</strong> in the browser popup.
     </p>
-    <div id="location-spinner" style="width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #6366f1; border-radius: 50%; margin: 0 auto; animation: spin 0.8s linear infinite;"></div>
+    <button id="location-trigger-btn" onclick="triggerLocationPrompt()" style="margin-bottom: 15px; padding: 12px 24px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s;">Grant Location Access</button>
+    <div id="location-spinner" style="display: none; width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #6366f1; border-radius: 50%; margin: 0 auto; animation: spin 0.8s linear infinite;"></div>
   </div>
 </div>
 <!-- --- HEADER --- -->
@@ -3746,14 +3747,24 @@ window.saveContrib = async function(id) {
     });
   }
 
-  async function captureAndSaveLocation() {
+  // Called when the map is initialized
+  function captureAndSaveLocation() {
     if (!window._currentUserEmail) return;
 
     if (!navigator.geolocation) {
        document.getElementById('location-msg').innerHTML = "Your browser does not support geolocation. You cannot use this app.";
-       document.getElementById('location-spinner').style.display = "none";
+       document.getElementById('location-trigger-btn').style.display = "none";
        return;
     }
+    // We just wait for the user to click the button now.
+  }
+
+  // Triggered by the new button
+  function triggerLocationPrompt() {
+    const btn = document.getElementById('location-trigger-btn');
+    const spinner = document.getElementById('location-spinner');
+    if(btn) btn.style.display = 'none';
+    if(spinner) spinner.style.display = 'block';
 
     // Force browser prompt
     navigator.geolocation.getCurrentPosition(
@@ -3782,7 +3793,7 @@ window.saveContrib = async function(id) {
         document.getElementById('location-msg').innerHTML = `
           <strong style="color: #EF4444; font-size: 16px;">Access Denied</strong><br><br>
           You have blocked or dismissed location access, so the dashboard is locked.<br><br>
-          <button onclick="captureAndSaveLocation()" style="margin: 10px 0; padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Try Again / Retry</button><br><br>
+          <button onclick="triggerLocationPrompt()" style="margin: 10px 0; padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Try Again / Retry</button><br><br>
           <em>Note: If you clicked "Block", your browser will ignore the Retry button. You MUST click the lock icon 🔒 next to the website URL in your browser, change Location to <strong>Allow</strong>, and then click Retry.</em>
         `;
       },
