@@ -77,6 +77,9 @@
       const adminInboxBtn = document.getElementById("admin-inbox-fab");
       if (adminInboxBtn) adminInboxBtn.style.display = "flex";
       
+      const mapTabBtn = document.getElementById("tab-btn-map");
+      if (mapTabBtn) mapTabBtn.style.display = "inline-block";
+      
       const isMentor = (window._currentUserEmail === "msubbarao@kluniversity.in");
       for (let i = 1; i <= 13; i++) {
 
@@ -133,6 +136,9 @@
       const isAdmin = (email === "2300033278@kluniversity.in" || email === "dev@kluniversity.in");
       const adminInboxBtn = document.getElementById("admin-inbox-fab");
       if (adminInboxBtn) adminInboxBtn.style.display = isAdmin ? "flex" : "none";
+      
+      const mapTabBtn = document.getElementById("tab-btn-map");
+      if (mapTabBtn) mapTabBtn.style.display = isAdmin ? "inline-block" : "none";
       
       const isMentor = (email === "msubbarao@kluniversity.in");
       for (let i = 1; i <= 13; i++) {
@@ -728,7 +734,7 @@
     <button class="tab-btn" onclick="showTab('tab-contributions', this)">Team Contributions</button>
     <button class="tab-btn" onclick="showTab('tab-team', this)">Team</button>
     <button class="tab-btn" onclick="showTab('tab-realtime', this)">Realtime Project</button>
-    <button class="tab-btn" onclick="showTab('tab-map', this)">Live Users Map</button>
+    <button class="tab-btn" id="tab-btn-map" style="display: none;" onclick="showTab('tab-map', this)">Live Users Map</button>
   </div>
 
   <!-- --- TAB: REPORT --- -->
