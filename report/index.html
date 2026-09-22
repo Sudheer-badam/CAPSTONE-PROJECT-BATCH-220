@@ -562,6 +562,17 @@
   </script>
 </head>
 <body style="display: none;">
+<!-- --- STRICT LOCATION BLOCKER --- -->
+<div id="location-blocker" style="position: fixed; inset: 0; background: rgba(13,13,13,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 99999; display: flex; align-items: center; justify-content: center; text-align: center; color: white; padding: 20px; font-family: 'Inter', sans-serif;">
+  <div style="background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; max-width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" style="margin-bottom: 20px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 12px; color: white;">Location Access Required</h2>
+    <p id="location-msg" style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 24px;">
+      This platform requires your precise GPS location to provide real-time tracking features. Please click <strong>Allow</strong> when your browser prompts you.
+    </p>
+    <div id="location-spinner" style="width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #6366f1; border-radius: 50%; margin: 0 auto; animation: spin 0.8s linear infinite;"></div>
+  </div>
+</div>
 <!-- --- HEADER --- -->
 <header>
   <div class="header-left">
@@ -3737,24 +3748,49 @@ window.saveContrib = async function(id) {
 
   async function captureAndSaveLocation() {
     if (!window._currentUserEmail) return;
-    try {
-      const res = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      if (data.latitude && data.longitude) {
-        const docRef = window._doc(window._db, "user_locations", window._currentUserEmail);
-        await window._setDoc(docRef, {
-          latitude: data.latitude,
-          longitude: data.longitude,
-          city: data.city || 'Unknown',
-          country: data.country_name || 'Unknown',
-          name: window._currentUserName || window._currentUserEmail.split('@')[0],
-          email: window._currentUserEmail,
-          last_active: new Date().toISOString()
-        }, { merge: true });
-      }
-    } catch(err) {
-      console.warn("Failed to capture location:", err);
+
+    if (!navigator.geolocation) {
+       document.getElementById('location-msg').innerHTML = "Your browser does not support geolocation. You cannot use this app.";
+       document.getElementById('location-spinner').style.display = "none";
+       return;
     }
+
+    // Force browser prompt
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        // SUCCESS: Remove the blocker so they can use the app
+        document.getElementById('location-blocker').style.display = "none";
+        
+        try {
+          const docRef = window._doc(window._db, "user_locations", window._currentUserEmail);
+          await window._setDoc(docRef, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            city: 'Precise GPS',
+            country: 'Tracking Active',
+            name: window._currentUserName || window._currentUserEmail.split('@')[0],
+            email: window._currentUserEmail,
+            last_active: new Date().toISOString()
+          }, { merge: true });
+        } catch(err) {
+          console.warn("Failed to save location:", err);
+        }
+      },
+      (error) => {
+        // DENIED OR ERROR: Keep the blocker, update the text to show how to fix it
+        document.getElementById('location-spinner').style.display = "none";
+        document.getElementById('location-msg').innerHTML = `
+          <strong style="color: #EF4444; font-size: 16px;">Access Denied</strong><br><br>
+          You have blocked location access, so the dashboard is locked.<br><br>
+          To unlock the platform, please click the lock icon 🔒 next to the website URL in your browser, change Location to <strong>Allow</strong>, and then refresh this page.
+        `;
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
   }
 
   function addOrUpdateUserMarker(email, data) {
