@@ -3781,8 +3781,9 @@ window.saveContrib = async function(id) {
         document.getElementById('location-spinner').style.display = "none";
         document.getElementById('location-msg').innerHTML = `
           <strong style="color: #EF4444; font-size: 16px;">Access Denied</strong><br><br>
-          You have blocked location access, so the dashboard is locked.<br><br>
-          To unlock the platform, please click the lock icon 🔒 next to the website URL in your browser, change Location to <strong>Allow</strong>, and then refresh this page.
+          You have blocked or dismissed location access, so the dashboard is locked.<br><br>
+          <button onclick="captureAndSaveLocation()" style="margin: 10px 0; padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Try Again / Retry</button><br><br>
+          <em>Note: If you clicked "Block", your browser will ignore the Retry button. You MUST click the lock icon 🔒 next to the website URL in your browser, change Location to <strong>Allow</strong>, and then click Retry.</em>
         `;
       },
       {
