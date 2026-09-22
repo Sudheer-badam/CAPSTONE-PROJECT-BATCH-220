@@ -3676,42 +3676,41 @@ window.saveContrib = async function(id) {
     usersMap = L.map('users-map').setView([20, 0], 2); // world view
 
     // Define Tile Layers
-    // Using standard OSM with a CSS filter to create a free dark mode without API keys
-    const darkTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-      className: 'dark-map-filter'
+    // Google Maps Tile Layers
+    const googleStreetsDark = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0','mt1','mt2','mt3'],
+      className: 'dark-map-filter',
+      attribution: '&copy; Google Maps'
     });
 
-    const standardOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
+    const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0','mt1','mt2','mt3'],
+      attribution: '&copy; Google Maps'
     });
 
-    const detailedStreetTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri',
-      maxZoom: 19
+    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0','mt1','mt2','mt3'],
+      attribution: '&copy; Google Maps'
     });
 
-    // Satellite base with transparent labels on top
-    const satelliteBase = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri',
-      maxZoom: 19
+    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0','mt1','mt2','mt3'],
+      attribution: '&copy; Google Maps'
     });
-    const satelliteLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19
-    });
-    const satelliteTile = L.layerGroup([satelliteBase, satelliteLabels]);
 
     // Add Dark by default
-    darkTile.addTo(usersMap);
+    googleStreetsDark.addTo(usersMap);
 
     // Layer Controls
     const baseMaps = {
-      "Dark Mode": darkTile,
-      "Standard (Villages)": standardOSM,
-      "Detailed Streets": detailedStreetTile,
-      "Satellite": satelliteTile
+      "Google Maps (Dark)": googleStreetsDark,
+      "Google Maps (Streets)": googleStreets,
+      "Google Maps (Satellite)": googleSatellite,
+      "Google Maps (Hybrid)": googleHybrid
     };
     L.control.layers(baseMaps).addTo(usersMap);
 
