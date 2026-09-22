@@ -8,6 +8,8 @@
 <link rel="icon" type="image/png" href="favicon.png"/>
 <link rel="alternate icon" href="favicon.ico" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <!-- html2pdf for PDF export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -726,6 +728,7 @@
     <button class="tab-btn" onclick="showTab('tab-contributions', this)">Team Contributions</button>
     <button class="tab-btn" onclick="showTab('tab-team', this)">Team</button>
     <button class="tab-btn" onclick="showTab('tab-realtime', this)">Realtime Project</button>
+    <button class="tab-btn" onclick="showTab('tab-map', this)">Live Users Map</button>
   </div>
 
   <!-- --- TAB: REPORT --- -->
@@ -1398,6 +1401,15 @@
     </div>
     <div style="text-align: center; margin-top: 15px;">
       <a href="https://capstone-project-220-realworld-project.vercel.app/" target="_blank" style="color: var(--primary); text-decoration: underline; font-weight: 500; font-size: 1.1rem;">Open Realtime Project in New Tab</a>
+    </div>
+  </div>
+
+  <!-- --- TAB: LIVE USERS MAP --- -->
+  <div id="tab-map" class="tab-panel">
+    <div class="section-title">Live Users Map</div>
+    <div class="section-sub">Real-time global map showing where team members and users are accessing the platform from.</div>
+    <div style="width: 100%; height: 600px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1;">
+      <div id="users-map" style="width: 100%; height: 100%; background: #1a1a24;"></div>
     </div>
   </div>
 
@@ -3638,6 +3650,127 @@ window.saveContrib = async function(id) {
       console.log("Audio/Vibrate not supported or blocked");
     }
   }
+</script>
+<script>
+  // --- USER LOCATION MAP LOGIC ---
+  let usersMap = null;
+  let userMarkers = {};
+  
+  function initUsersMap() {
+    if (usersMap) return;
+    const mapContainer = document.getElementById('users-map');
+    if (!mapContainer || mapContainer.offsetHeight === 0) return; // wait until visible
+
+    // Initialize Map
+    usersMap = L.map('users-map').setView([20, 0], 2); // world view
+
+    // Define Tile Layers
+    const darkTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+    });
+
+    const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      maxZoom: 19
+    });
+
+    // Add Dark by default
+    darkTile.addTo(usersMap);
+
+    // Layer Controls
+    const baseMaps = {
+      "Dark Mode": darkTile,
+      "Satellite": satelliteTile
+    };
+    L.control.layers(baseMaps).addTo(usersMap);
+
+    // Fetch own location and save to Firestore
+    captureAndSaveLocation();
+
+    // Listen to real-time updates from Firestore
+    window._onSnapshot(window._collection(window._db, "user_locations"), (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const data = change.doc.data();
+        const email = change.doc.id;
+        if (change.type === "added" || change.type === "modified") {
+          addOrUpdateUserMarker(email, data);
+        }
+        if (change.type === "removed") {
+          if (userMarkers[email]) {
+            usersMap.removeLayer(userMarkers[email]);
+            delete userMarkers[email];
+          }
+        }
+      });
+    });
+  }
+
+  async function captureAndSaveLocation() {
+    if (!window._currentUserEmail) return;
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        const docRef = window._doc(window._db, "user_locations", window._currentUserEmail);
+        await window._setDoc(docRef, {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          city: data.city || 'Unknown',
+          country: data.country_name || 'Unknown',
+          name: window._currentUserName || window._currentUserEmail.split('@')[0],
+          email: window._currentUserEmail,
+          last_active: new Date().toISOString()
+        }, { merge: true });
+      }
+    } catch(err) {
+      console.warn("Failed to capture location:", err);
+    }
+  }
+
+  function addOrUpdateUserMarker(email, data) {
+    if (!data.latitude || !data.longitude || !usersMap) return;
+
+    // Custom Icon with initial
+    const initial = data.name ? data.name.charAt(0).toUpperCase() : '?';
+    const customIcon = L.divIcon({
+      className: 'custom-user-marker',
+      html: `<div style="background-color: var(--accent); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">${initial}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -15]
+    });
+
+    const popupHtml = `
+      <div style="font-family: 'Inter', sans-serif; min-width: 120px;">
+        <strong style="display:block; font-size: 14px; margin-bottom: 4px;">${data.name}</strong>
+        <span style="font-size: 12px; color: #555;">${data.city}, ${data.country}</span><br>
+        <span style="font-size: 10px; color: #888;">Active: ${new Date(data.last_active).toLocaleString()}</span>
+      </div>
+    `;
+
+    if (userMarkers[email]) {
+      userMarkers[email].setLatLng([data.latitude, data.longitude]);
+      userMarkers[email].setPopupContent(popupHtml);
+    } else {
+      userMarkers[email] = L.marker([data.latitude, data.longitude], {icon: customIcon})
+        .addTo(usersMap)
+        .bindPopup(popupHtml);
+    }
+  }
+
+  // Intercept showTab to initialize map properly when the tab is clicked
+  const originalShowTab = window.showTab;
+  window.showTab = function(id, btn) {
+    originalShowTab(id, btn);
+    if (id === 'tab-map') {
+      setTimeout(() => {
+        if (!usersMap) initUsersMap();
+        else usersMap.invalidateSize();
+      }, 100);
+    }
+  };
 </script>
 </body>
 
