@@ -725,6 +725,7 @@
     <button class="tab-btn" onclick="showTab('tab-diary', this)">Weekly Diary</button>
     <button class="tab-btn" onclick="showTab('tab-contributions', this)">Team Contributions</button>
     <button class="tab-btn" onclick="showTab('tab-team', this)">Team</button>
+    <button class="tab-btn" onclick="showTab('tab-realtime', this)">Realtime Project</button>
   </div>
 
   <!-- --- TAB: REPORT --- -->
@@ -1385,6 +1386,15 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- --- TAB: REALTIME PROJECT --- -->
+  <div id="tab-realtime" class="tab-panel">
+    <div class="section-title">Realtime Analysis Dashboard</div>
+    <div class="section-sub">Live monitoring and realtime updation project.</div>
+    <div style="width: 100%; height: 80vh; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+      <iframe src="https://capstone-project-220-realworld-project.vercel.app/" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
   </div>
 
