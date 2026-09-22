@@ -3766,8 +3766,8 @@ window.saveContrib = async function(id) {
     if(btn) btn.style.display = 'none';
     if(spinner) spinner.style.display = 'block';
 
-    // Force browser prompt
-    navigator.geolocation.getCurrentPosition(
+    // Force browser prompt and continuously track (Live Location)
+    navigator.geolocation.watchPosition(
       async (position) => {
         // SUCCESS: Remove the blocker so they can use the app
         document.getElementById('location-blocker').style.display = "none";
@@ -3777,7 +3777,7 @@ window.saveContrib = async function(id) {
           await window._setDoc(docRef, {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            city: 'Precise GPS',
+            city: 'Live Tracking Active',
             country: 'Tracking Active',
             name: window._currentUserName || window._currentUserEmail.split('@')[0],
             email: window._currentUserEmail,
