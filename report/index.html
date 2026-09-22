@@ -8,8 +8,11 @@
 <link rel="icon" type="image/png" href="favicon.png"/>
 <link rel="alternate icon" href="favicon.ico" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Leaflet Routing Machine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <!-- html2pdf for PDF export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -3760,6 +3763,26 @@ window.saveContrib = async function(id) {
   }
 
   // Triggered by the new button
+  window.drawRoute = function(destLat, destLng) {
+    if (!window._myLocation || !usersMap) return;
+    
+    if (window._currentRouteControl) {
+      usersMap.removeControl(window._currentRouteControl);
+    }
+    
+    window._currentRouteControl = L.Routing.control({
+      waypoints: [
+        window._myLocation,
+        L.latLng(destLat, destLng)
+      ],
+      routeWhileDragging: false,
+      show: false, // hide the text instructions box
+      lineOptions: {
+        styles: [{color: '#6366f1', opacity: 0.8, weight: 6}]
+      }
+    }).addTo(usersMap);
+  };
+
   function triggerLocationPrompt() {
     if (!window._currentUserEmail || !window._db) {
        alert("Loading your secure session. Please wait 1 second and click again...");
@@ -3777,6 +3800,9 @@ window.saveContrib = async function(id) {
         // SUCCESS: Remove the blocker so they can use the app
         document.getElementById('location-blocker').style.display = "none";
         
+        // Save own location globally for distance calculation
+        window._myLocation = L.latLng(position.coords.latitude, position.coords.longitude);
+
         try {
           const docRef = window._doc(window._db, "user_locations", window._currentUserEmail);
           await window._setDoc(docRef, {
@@ -3823,11 +3849,22 @@ window.saveContrib = async function(id) {
       popupAnchor: [0, -15]
     });
 
+    let distanceText = "";
+    let dirBtn = "";
+    if (window._myLocation && email !== window._currentUserEmail) {
+      const userLatLng = L.latLng(data.latitude, data.longitude);
+      const distKm = (window._myLocation.distanceTo(userLatLng) / 1000).toFixed(2);
+      distanceText = `<span style="font-size: 12px; color: #6366f1; font-weight: bold; display:block; margin-top:4px;">📍 ${distKm} km away</span>`;
+      dirBtn = `<button onclick="window.drawRoute(${data.latitude}, ${data.longitude})" style="margin-top: 8px; padding: 6px; width: 100%; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">Get Directions</button>`;
+    }
+
     const popupHtml = `
       <div style="font-family: 'Inter', sans-serif; min-width: 120px;">
         <strong style="display:block; font-size: 14px; margin-bottom: 4px;">${data.name}</strong>
         <span style="font-size: 12px; color: #555;">${data.city}, ${data.country}</span><br>
         <span style="font-size: 10px; color: #888;">Active: ${new Date(data.last_active).toLocaleString()}</span>
+        ${distanceText}
+        ${dirBtn}
       </div>
     `;
 
