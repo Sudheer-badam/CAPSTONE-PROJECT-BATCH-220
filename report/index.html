@@ -527,6 +527,11 @@
   ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
   ::-webkit-scrollbar-button { display: none; }
+
+  /* Map Dark Mode Filter */
+  .dark-map-filter {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
   <script>
@@ -3671,10 +3676,11 @@ window.saveContrib = async function(id) {
     usersMap = L.map('users-map').setView([20, 0], 2); // world view
 
     // Define Tile Layers
-    const darkTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
+    // Using standard OSM with a CSS filter to create a free dark mode without API keys
+    const darkTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+      className: 'dark-map-filter'
     });
 
     const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
