@@ -3761,6 +3761,11 @@ window.saveContrib = async function(id) {
 
   // Triggered by the new button
   function triggerLocationPrompt() {
+    if (!window._currentUserEmail || !window._db) {
+       alert("Loading your secure session. Please wait 1 second and click again...");
+       return;
+    }
+
     const btn = document.getElementById('location-trigger-btn');
     const spinner = document.getElementById('location-spinner');
     if(btn) btn.style.display = 'none';
