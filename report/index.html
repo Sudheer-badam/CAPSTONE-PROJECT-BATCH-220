@@ -3693,10 +3693,15 @@ window.saveContrib = async function(id) {
       maxZoom: 19
     });
 
-    const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    // Satellite base with transparent labels on top
+    const satelliteBase = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri',
       maxZoom: 19
     });
+    const satelliteLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19
+    });
+    const satelliteTile = L.layerGroup([satelliteBase, satelliteLabels]);
 
     // Add Dark by default
     darkTile.addTo(usersMap);
